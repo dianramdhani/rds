@@ -29,7 +29,7 @@ export class MapComponent implements OnInit {
         this.trips.forEach(trip => {
           // infoWindow
           const infoWindowHover = new google.maps.InfoWindow(),
-            infoWindowClick = new google.maps.InfoWindow(),
+            // infoWindowClick = new google.maps.InfoWindow(),
             setContentInfoWindow = (
               lat: number,
               lng: number,
@@ -67,10 +67,10 @@ export class MapComponent implements OnInit {
           polyline.addListener('mouseout', () => {
             infoWindowHover.close();
           });
-          polyline.addListener('click', (e: google.maps.MouseEvent) => {
-            infoWindowClick.close();
-            setContentInfoWindow(e.latLng.lat(), e.latLng.lng(), infoWindowClick);
-          });
+          // polyline.addListener('click', (e: google.maps.MouseEvent) => {
+          //   infoWindowClick.close();
+          //   setContentInfoWindow(e.latLng.lat(), e.latLng.lng(), infoWindowClick);
+          // });
           polyline.setMap(this.map);
         });
       });
