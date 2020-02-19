@@ -1,6 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { TripService } from '@data/service/trip.service';
 
+import { TripByTrack } from '@data/scheme/trip-by-track';
+import { Subject } from 'rxjs';
 import { Trip } from '@data/scheme/trip';
 
 @Component({
@@ -9,9 +11,23 @@ import { Trip } from '@data/scheme/trip';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
+  @Input('tripSelected') tripSelected: Subject<Trip>;
   @ViewChild('map', { static: true }) mapEl: ElementRef;
   map: google.maps.Map;
-  trips: Trip[] = [];
+  trips: TripByTrack[] = [];
+  // http://eyetracking.upol.cz/color/
+  colorsBar = [
+    '#3bd100',
+    '#55cc00',
+    '#7dbf00',
+    '#9baf00',
+    '#b39f00',
+    '#cd8600',
+    '#dd7200',
+    '#eb5900',
+    '#f63b00',
+    '#fa2a00'
+  ];
   protected infoWindowClick = new google.maps.InfoWindow();
 
   constructor(
@@ -19,23 +35,35 @@ export class MapComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.map = new google.maps.Map(this.mapEl.nativeElement, {
-      center: new google.maps.LatLng(-6.8966657, 107.6146185),
-      zoom: 10,
-    });
-
-    this.tripService.getTripByTrack(1)
-      .subscribe(res => {
-        this.trips = res;
-        if (this.trips.length) {
-          for (const i in this.trips) {
-            this.drawer(this.trips[i]);
-          }
-        }
+    this.tripSelected.subscribe(trip => {
+      this.map = new google.maps.Map(this.mapEl.nativeElement, {
+        center: new google.maps.LatLng(-6.8966657, 107.6146185),
+        zoom: 10,
       });
+
+      this.tripService.getTripByTrack(trip.id)
+        .subscribe(res => {
+          this.trips = res;
+          if (this.trips.length) {
+            for (const i in this.trips) {
+              this.drawer(this.trips[i]);
+            }
+          }
+        });
+    });
   }
 
-  protected drawer(trip: Trip) {
+  protected drawer(trip: TripByTrack) {
+    const scale = (
+      num: number,
+      in_min: number,
+      in_max: number,
+      out_min: number,
+      out_max: number
+    ) => {
+      return Math.round((num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+    };
+
     // drawer infoWindow
     const infoWindowHover = new google.maps.InfoWindow(),
       setContentInfoWindow = (
@@ -62,13 +90,15 @@ export class MapComponent implements OnInit {
       };
 
     // drawer polyline
-    const polyline = new google.maps.Polyline({
-      strokeColor: 'blue',
-      path: [
-        new google.maps.LatLng(trip.startLatitude, trip.startLongitude),
-        new google.maps.LatLng(trip.stopLatitude, trip.stopLongitude),
-      ]
-    });
+    const index = scale(trip.iri.iriScore, 0, 12, 0, 9),
+      polyline = new google.maps.Polyline({
+        strokeColor: this.colorsBar[index],
+        strokeWeight: 5,
+        path: [
+          new google.maps.LatLng(trip.startLatitude, trip.startLongitude),
+          new google.maps.LatLng(trip.stopLatitude, trip.stopLongitude),
+        ]
+      });
     polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {
       setContentInfoWindow(e.latLng.lat(), e.latLng.lng(), infoWindowHover);
     });

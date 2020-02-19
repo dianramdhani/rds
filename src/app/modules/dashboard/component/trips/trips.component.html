@@ -1,0 +1,22 @@
+<table border="1">
+    <thead>
+        <tr>
+            <td>Trip Name</td>
+            <td>Start City</td>
+            <td>Start Street Name</td>
+            <td>Start Start Date</td>
+            <td>Start End Date</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let trip of trips">
+            <td>{{ trip.tripName }}</td>
+            <td>{{ trip.startCity }}</td>
+            <td>{{ trip.startStreetName }}</td>
+            <td>{{ trip.startDate | date: 'medium' }}</td>
+            <td>{{ trip.endDate | date: 'medium' }}</td>
+            <td><button (click)="selectTrip(trip, $event)">Select</button></td>
+        </tr>
+    </tbody>
+</table>

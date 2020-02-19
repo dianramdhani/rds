@@ -1,10 +1,9 @@
-export class Iri {
-    id: number | string;
+import { Iri } from './iri'
+
+export class TripByTrack {
     startLatitude: number;
     startLongitude: number;
     stopLatitude: number;
     stopLongitude: number;
-    iriScore: number;
-    distance: number;
-    tripId: any
+    iri: Iri
 }

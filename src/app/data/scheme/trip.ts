@@ -1,9 +1,8 @@
-import { Iri } from './iri'
-
 export class Trip {
-    startLatitude: number;
-    startLongitude: number;
-    stopLatitude: number;
-    stopLongitude: number;
-    iri: Iri
+    id: number | string;
+    startDate: string;
+    endDate: string;
+    tripName: string;
+    startCity: string;
+    startStreetName: string
 }
