@@ -46,4 +46,7 @@ testem.log
 Thumbs.db
 
 # index.html
-/src/app/index.html
+/src/index.html
+
+# config.js
+/src/assets/config.js
