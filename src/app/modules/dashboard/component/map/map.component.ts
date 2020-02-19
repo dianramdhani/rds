@@ -36,15 +36,15 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     this.tripSelected.subscribe(trip => {
-      this.map = new google.maps.Map(this.mapEl.nativeElement, {
-        center: new google.maps.LatLng(-6.8966657, 107.6146185),
-        zoom: 10,
-      });
+      this.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
 
       this.tripService.getTripByTrack(trip.id)
         .subscribe(res => {
           this.trips = res;
+
           if (this.trips.length) {
+            this.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
+
             for (const i in this.trips) {
               this.drawer(this.trips[i]);
             }
