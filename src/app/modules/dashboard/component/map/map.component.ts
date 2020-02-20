@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 
 import { TripByTrack } from '@data/scheme/trip-by-track';
-import { TripService } from '@data/service/trip.service';
+import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 
 @Component({
   selector: 'app-map',
@@ -27,16 +27,16 @@ export class MapComponent implements OnInit {
   protected infoWindowClick = new google.maps.InfoWindow();
 
   constructor(
-    private tripService: TripService
+    private mapGraphCommunicatorService: MapGraphCommunicatorService
   ) { }
 
   ngOnInit() {
-    this.tripService.lastTrips
+    this.mapGraphCommunicatorService.lastTrips
       .subscribe(trips => {
         this.trips = trips;
-        this.tripService.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
+        this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
         if (this.trips.length) {
-          this.tripService.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
+          this.mapGraphCommunicatorService.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
 
           for (const i in this.trips) {
             this.drawer(this.trips[i]);
@@ -78,7 +78,7 @@ export class MapComponent implements OnInit {
         `;
         _infoWindow.setContent(content);
         _infoWindow.setPosition({ lat, lng });
-        _infoWindow.open(this.tripService.map);
+        _infoWindow.open(this.mapGraphCommunicatorService.map);
       };
 
     // drawer polyline
@@ -101,6 +101,6 @@ export class MapComponent implements OnInit {
       this.infoWindowClick.close();
       setContentInfoWindow(e.latLng.lat(), e.latLng.lng(), this.infoWindowClick);
     });
-    polyline.setMap(this.tripService.map);
+    polyline.setMap(this.mapGraphCommunicatorService.map);
   }
 }

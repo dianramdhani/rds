@@ -6,7 +6,7 @@ import { MapComponent } from './component/map/map.component';
 import { DashboardComponent } from './page/dashboard/dashboard.component';
 import { TripsComponent } from './component/trips/trips.component';
 import { GraphComponent } from './component/graph/graph.component';
-import { TripService } from '@data/service/trip.service';
+import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 
 
 @NgModule({
@@ -16,7 +16,7 @@ import { TripService } from '@data/service/trip.service';
     DashboardRoutingModule
   ],
   providers: [
-    TripService
+    MapGraphCommunicatorService
   ]
 })
 export class DashboardModule { }

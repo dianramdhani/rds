@@ -4,6 +4,7 @@ import { Trip } from '@data/scheme/trip';
 import { Subject } from 'rxjs';
 import { TripByTrack } from '@data/scheme/trip-by-track';
 import { TripService } from '@data/service/trip.service';
+import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +16,8 @@ export class DashboardComponent implements OnInit {
   map: google.maps.Map;
 
   constructor(
-    private tripService: TripService
+    private tripService: TripService,
+    private mapGraphCommunicatorService: MapGraphCommunicatorService
   ) { }
 
   ngOnInit() {
@@ -23,6 +25,6 @@ export class DashboardComponent implements OnInit {
   }
 
   selectTrip(trip: Trip) {
-    this.tripService.getTripByTrack(trip.id).subscribe(trips => this.tripService.lastTrips.next(trips));
+    this.tripService.getTripByTrack(trip.id).subscribe(trips => this.mapGraphCommunicatorService.lastTrips.next(trips));
   }
 }

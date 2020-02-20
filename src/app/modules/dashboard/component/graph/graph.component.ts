@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Chart } from 'chart.js';
-import { Subject } from 'rxjs';
 
 import { TripByTrack } from '@data/scheme/trip-by-track';
-import { TripService } from '@data/service/trip.service';
+import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 
 @Component({
   selector: 'app-graph',
@@ -16,11 +15,11 @@ export class GraphComponent implements OnInit {
   trips: TripByTrack[];
 
   constructor(
-    private tripService: TripService
+    private mapGraphCommunicatorService: MapGraphCommunicatorService
   ) { }
 
   ngOnInit() {
-    this.tripService.lastTrips
+    this.mapGraphCommunicatorService.lastTrips
       .subscribe(trips => {
         console.log(trips, 'ini di graph');
         this.trips = trips;
@@ -75,7 +74,7 @@ export class GraphComponent implements OnInit {
           custom: (tootip) => {
             if (tootip.dataPoints) {
               console.log(tootip.dataPoints);
-              console.log(this.tripService.map);
+              console.log(this.mapGraphCommunicatorService.map);
             }
           }
         },
