@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { TripService } from '@data/service/trip.service';
 
 import { TripByTrack } from '@data/scheme/trip-by-track';
 import { Subject } from 'rxjs';
-import { Trip } from '@data/scheme/trip';
 
 @Component({
   selector: 'app-map',
@@ -11,7 +9,7 @@ import { Trip } from '@data/scheme/trip';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  @Input('tripSelected') tripSelected: Subject<Trip>;
+  @Input('trips') getterTrips: Subject<TripByTrack[]>;
   @ViewChild('map', { static: true }) mapEl: ElementRef;
   map: google.maps.Map;
   trips: TripByTrack[] = [];
@@ -30,27 +28,21 @@ export class MapComponent implements OnInit {
   ];
   protected infoWindowClick = new google.maps.InfoWindow();
 
-  constructor(
-    private tripService: TripService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-    this.tripSelected.subscribe(trip => {
-      this.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
+    this.getterTrips
+      .subscribe(trips => {
+        this.trips = trips;
+        this.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
+        if (this.trips.length) {
+          this.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
 
-      this.tripService.getTripByTrack(trip.id)
-        .subscribe(res => {
-          this.trips = res;
-
-          if (this.trips.length) {
-            this.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
-
-            for (const i in this.trips) {
-              this.drawer(this.trips[i]);
-            }
+          for (const i in this.trips) {
+            this.drawer(this.trips[i]);
           }
-        });
-    });
+        }
+      });
   }
 
   protected drawer(trip: TripByTrack) {
