@@ -1,5 +1,5 @@
 function config() {
     return {
-        api: 'http://apps.tritronik.com/roughness-detection-system-service-dev'
+        api: 'http://apps.tritronik.com/roughness-detection-system-service'
     }
 }
