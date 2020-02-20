@@ -21,7 +21,10 @@ export class GraphComponent implements OnInit {
   ngOnInit() {
     this.mapGraphCommunicatorService.lastTrips
       .subscribe(trips => {
-        console.log(trips, 'ini di graph');
+        if (!this.chart) {
+          this.chartInit();
+        }
+
         this.trips = trips;
         if (this.trips.length) {
           this.chartDrawer();
@@ -29,9 +32,47 @@ export class GraphComponent implements OnInit {
       });
   }
 
+  protected chartInit() {
+    this.chart = new Chart(this.chartEl.nativeElement, {
+      type: 'line',
+      options: {
+        responsive: false,
+        tooltips: {
+          mode: 'index',
+          custom: (tootip) => {
+            if (tootip.dataPoints) {
+              console.log(tootip.dataPoints);
+              console.log(this.mapGraphCommunicatorService.map);
+            }
+          }
+        },
+        scales: {
+          yAxes: [
+            {
+              id: 'iri',
+              type: 'linear',
+              position: 'left',
+              ticks: { fontColor: '#007bff' }
+            },
+            {
+              id: 'altitude',
+              type: 'linear',
+              position: 'right',
+              ticks: { fontColor: '#dc3545' }
+            }
+          ]
+        }
+      }
+    });
+  }
+
   protected chartDrawer() {
     if (this.chart) {
-      this.chart.clear();
+      this.chart.data.labels.pop();
+      this.chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+      });
+      this.chart.update();
     }
 
     const data: Chart.ChartData = {
@@ -65,37 +106,7 @@ export class GraphComponent implements OnInit {
         }
       ]
     };
-    this.chart = new Chart(this.chartEl.nativeElement, {
-      type: 'line',
-      data,
-      options: {
-        responsive: false,
-        tooltips: {
-          mode: 'index',
-          custom: (tootip) => {
-            if (tootip.dataPoints) {
-              console.log(tootip.dataPoints);
-              console.log(this.mapGraphCommunicatorService.map);
-            }
-          }
-        },
-        scales: {
-          yAxes: [
-            {
-              id: 'iri',
-              type: 'linear',
-              position: 'left',
-              ticks: { fontColor: '#007bff' }
-            },
-            {
-              id: 'altitude',
-              type: 'linear',
-              position: 'right',
-              ticks: { fontColor: '#dc3545' }
-            }
-          ]
-        }
-      }
-    });
+    this.chart.data = data;
+    this.chart.update();
   }
 }
