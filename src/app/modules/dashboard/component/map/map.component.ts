@@ -10,6 +10,7 @@ import { MapGraphCommunicatorService } from '@shared/service/map-graph-communica
 })
 export class MapComponent implements OnInit {
   @ViewChild('map', { static: true }) mapEl: ElementRef;
+  @ViewChild('legend', { static: true }) legendEl: ElementRef;
   trips: TripByTrack[] = [];
   // http://eyetracking.upol.cz/color/
   colorsBar = [
@@ -35,6 +36,7 @@ export class MapComponent implements OnInit {
       .subscribe(trips => {
         this.trips = trips;
         this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
+        this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
         if (this.trips.length) {
           this.mapGraphCommunicatorService.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
 
