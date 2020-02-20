@@ -3,12 +3,15 @@ import { HttpClient } from '@angular/common/http';
 
 import { TripByTrack } from '@data/scheme/trip-by-track';
 import { Trip } from '@data/scheme/trip';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TripService {
   protected url: string;
+  protected _map: google.maps.Map;
+  lastTrips = new Subject<TripByTrack[]>();
 
   constructor(
     private httpClient: HttpClient
@@ -22,5 +25,13 @@ export class TripService {
 
   retrieveAllTrips() {
     return this.httpClient.get<Trip[]>(`${this.url}/trip-service/trips`);
+  }
+
+  set map(map: google.maps.Map) {
+    this._map = map;
+  }
+
+  get map() {
+    return this._map;
   }
 }

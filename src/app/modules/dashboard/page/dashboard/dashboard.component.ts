@@ -12,15 +12,17 @@ import { TripService } from '@data/service/trip.service';
 })
 export class DashboardComponent implements OnInit {
   trips = new Subject<TripByTrack[]>();
+  map: google.maps.Map;
 
   constructor(
     private tripService: TripService
   ) { }
 
   ngOnInit() {
+    console.log(this.map);
   }
 
   selectTrip(trip: Trip) {
-    this.tripService.getTripByTrack(trip.id).subscribe(trips => this.trips.next(trips));
+    this.tripService.getTripByTrack(trip.id).subscribe(trips => this.tripService.lastTrips.next(trips));
   }
 }

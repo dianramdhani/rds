@@ -6,6 +6,7 @@ import { MapComponent } from './component/map/map.component';
 import { DashboardComponent } from './page/dashboard/dashboard.component';
 import { TripsComponent } from './component/trips/trips.component';
 import { GraphComponent } from './component/graph/graph.component';
+import { TripService } from '@data/service/trip.service';
 
 
 @NgModule({
@@ -13,6 +14,9 @@ import { GraphComponent } from './component/graph/graph.component';
   imports: [
     CommonModule,
     DashboardRoutingModule
+  ],
+  providers: [
+    TripService
   ]
 })
 export class DashboardModule { }

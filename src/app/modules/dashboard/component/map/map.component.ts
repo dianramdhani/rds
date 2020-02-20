@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 
 import { TripByTrack } from '@data/scheme/trip-by-track';
-import { Subject } from 'rxjs';
+import { TripService } from '@data/service/trip.service';
 
 @Component({
   selector: 'app-map',
@@ -9,9 +9,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  @Input('trips') getterTrips: Subject<TripByTrack[]>;
   @ViewChild('map', { static: true }) mapEl: ElementRef;
-  map: google.maps.Map;
   trips: TripByTrack[] = [];
   // http://eyetracking.upol.cz/color/
   colorsBar = [
@@ -28,15 +26,17 @@ export class MapComponent implements OnInit {
   ];
   protected infoWindowClick = new google.maps.InfoWindow();
 
-  constructor() { }
+  constructor(
+    private tripService: TripService
+  ) { }
 
   ngOnInit() {
-    this.getterTrips
+    this.tripService.lastTrips
       .subscribe(trips => {
         this.trips = trips;
-        this.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
+        this.tripService.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
         if (this.trips.length) {
-          this.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
+          this.tripService.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
 
           for (const i in this.trips) {
             this.drawer(this.trips[i]);
@@ -78,7 +78,7 @@ export class MapComponent implements OnInit {
         `;
         _infoWindow.setContent(content);
         _infoWindow.setPosition({ lat, lng });
-        _infoWindow.open(this.map);
+        _infoWindow.open(this.tripService.map);
       };
 
     // drawer polyline
@@ -101,6 +101,6 @@ export class MapComponent implements OnInit {
       this.infoWindowClick.close();
       setContentInfoWindow(e.latLng.lat(), e.latLng.lng(), this.infoWindowClick);
     });
-    polyline.setMap(this.map);
+    polyline.setMap(this.tripService.map);
   }
 }

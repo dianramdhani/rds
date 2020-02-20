@@ -3,6 +3,7 @@ import { Chart } from 'chart.js';
 import { Subject } from 'rxjs';
 
 import { TripByTrack } from '@data/scheme/trip-by-track';
+import { TripService } from '@data/service/trip.service';
 
 @Component({
   selector: 'app-graph',
@@ -10,15 +11,16 @@ import { TripByTrack } from '@data/scheme/trip-by-track';
   styleUrls: ['./graph.component.scss']
 })
 export class GraphComponent implements OnInit {
-  @Input('trips') getterTrips: Subject<TripByTrack[]>;
   @ViewChild('chart', { static: true }) chartEl: ElementRef;
   chart: Chart;
   trips: TripByTrack[];
 
-  constructor() { }
+  constructor(
+    private tripService: TripService
+  ) { }
 
   ngOnInit() {
-    this.getterTrips
+    this.tripService.lastTrips
       .subscribe(trips => {
         console.log(trips, 'ini di graph');
         this.trips = trips;
@@ -70,8 +72,11 @@ export class GraphComponent implements OnInit {
       options: {
         tooltips: {
           mode: 'index',
-          custom: (tooltip) => {
-            console.log(tooltip);
+          custom: (tootip) => {
+            if (tootip.dataPoints) {
+              console.log(tootip.dataPoints);
+              console.log(this.tripService.map);
+            }
           }
         },
         scales: {
@@ -80,17 +85,13 @@ export class GraphComponent implements OnInit {
               id: 'iri',
               type: 'linear',
               position: 'left',
-              ticks: {
-                fontColor: '#007bff'
-              }
+              ticks: { fontColor: '#007bff' }
             },
             {
               id: 'altitude',
               type: 'linear',
               position: 'right',
-              ticks: {
-                fontColor: '#dc3545'
-              }
+              ticks: { fontColor: '#dc3545' }
             }
           ]
         }
