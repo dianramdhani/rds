@@ -32,6 +32,11 @@ export class MapComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, {
+      zoom: 16,
+      center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 })
+    });
+
     this.mapGraphCommunicatorService.lastTrips
       .subscribe(trips => {
         this.trips = trips;

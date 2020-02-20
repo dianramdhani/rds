@@ -69,6 +69,7 @@ export class GraphComponent implements OnInit {
       type: 'line',
       data,
       options: {
+        responsive: false,
         tooltips: {
           mode: 'index',
           custom: (tootip) => {
