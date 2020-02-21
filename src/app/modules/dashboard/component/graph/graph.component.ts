@@ -41,8 +41,7 @@ export class GraphComponent implements OnInit {
           mode: 'index',
           custom: (tootip) => {
             if (tootip.dataPoints) {
-              console.log(tootip.dataPoints);
-              console.log(this.mapGraphCommunicatorService.map);
+              this.mapGraphCommunicatorService.drawMapPopup(this.trips[tootip.dataPoints[0].index]);
             }
           }
         },
