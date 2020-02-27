@@ -7,5 +7,5 @@ export class TripByTrack {
     stopLongitude: number;
     interval: number;
     altitude: number;
-    iri: Iri
+    iriResult: Iri
 }

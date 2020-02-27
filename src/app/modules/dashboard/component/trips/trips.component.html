@@ -4,21 +4,21 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Trip Name</th>
+                    <th>Survey Name</th>
                     <!-- <th>Start City</th>
                     <th>Start Street Name</th> -->
                     <th>Start Date</th>
-                    <!-- <th>Start End Date</th> -->
+                    <th>End Date</th>
                     <!-- <th></th> -->
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let trip of trips" (click)="selectTrip(trip, $event)">
-                    <td>{{ trip.tripName }}</td>
+                    <td>{{ trip.surveyName }}</td>
                     <!-- <td>{{ trip.startCity }}</td> -->
                     <!-- <td>{{ trip.startStreetName }}</td> -->
                     <td>{{ trip.startDate | date: 'medium' }}</td>
-                    <!-- <td>{{ trip.endDate | date: 'medium' }}</td> -->
+                    <td>{{ trip.endDate | date: 'medium' }}</td>
                     <!-- <td class="text-right">
                         <button class="btn btn-primary" (click)="selectTrip(trip, $event)">Select</button>
                     </td> -->

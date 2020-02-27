@@ -92,7 +92,7 @@ export class GraphComponent implements OnInit {
           yAxisID: 'iri',
           backgroundColor: '#007bff',
           borderColor: '#007bff',
-          data: this.trips.map(trip => trip.iri.iriScore),
+          data: this.trips.map(trip => trip.iriResult.iriScore),
           fill: false
         },
         {

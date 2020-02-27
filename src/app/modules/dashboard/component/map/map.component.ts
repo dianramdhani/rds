@@ -73,7 +73,7 @@ export class MapComponent implements OnInit {
         const content = `
         <ul>
             <li>
-                <strong>IRI: </strong>${trip.iri.iriScore}
+                <strong>IRI: </strong>${trip.iriResult.iriScore}
             </li>
             <li>
                 <strong>Latitude: </strong>${lat}
@@ -89,7 +89,7 @@ export class MapComponent implements OnInit {
       };
 
     // drawer polyline
-    const index = scale(trip.iri.iriScore, 0, 12, 0, 9),
+    const index = scale(trip.iriResult.iriScore, 0, 12, 0, 9),
       polyline = new google.maps.Polyline({
         strokeColor: this.colorsBar[index],
         strokeWeight: 5,

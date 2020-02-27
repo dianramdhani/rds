@@ -25,6 +25,6 @@ export class DashboardComponent implements OnInit {
   }
 
   selectTrip(trip: Trip) {
-    this.tripService.getTripByTrack(trip.id).subscribe(trips => this.mapGraphCommunicatorService.lastTrips.next(trips));
+    this.tripService.getSurveyTracks(trip.id).subscribe(trips => this.mapGraphCommunicatorService.lastTrips.next(trips));
   }
 }

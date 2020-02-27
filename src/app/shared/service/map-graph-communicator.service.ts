@@ -29,7 +29,7 @@ export class MapGraphCommunicatorService {
     const content = `
         <ul>
             <li>
-                <strong>IRI: </strong>${trip.iri.iriScore}
+                <strong>IRI: </strong>${trip.iriResult.iriScore}
             </li>
             <li>
                 <strong>Latitude: </strong>${trip.startLatitude}

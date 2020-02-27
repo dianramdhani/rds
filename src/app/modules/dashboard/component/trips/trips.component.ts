@@ -17,7 +17,7 @@ export class TripsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.tripService.retrieveAllTrips()
+    this.tripService.retrieveAllSurveySummaries()
       .subscribe(res => {
         console.log(res);
         this.trips = res;
