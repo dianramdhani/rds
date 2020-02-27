@@ -17,10 +17,10 @@ export class TripService {
   }
 
   getTripByTrack(tripId: string | number) {
-    return this.httpClient.get<TripByTrack[]>(`${this.url}/trip-service/trips/${tripId}/tracks/route`);
+    return this.httpClient.get<TripByTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${tripId}/tracks`);
   }
 
   retrieveAllTrips() {
-    return this.httpClient.get<Trip[]>(`${this.url}/trip-service/trips`);
+    return this.httpClient.get<Trip[]>(`${this.url}/survey-summary-service/surveySummaries`);
   }
 }
