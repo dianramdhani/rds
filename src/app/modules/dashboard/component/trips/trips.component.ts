@@ -11,6 +11,7 @@ import { TripService } from '@data/service/trip.service';
 export class TripsComponent implements OnInit {
   @Output('selectTrip') _selectTrip = new EventEmitter<Trip>()
   trips: Trip[] = [];
+  tripIndexSelected: number;
 
   constructor(
     private tripService: TripService
@@ -24,8 +25,9 @@ export class TripsComponent implements OnInit {
       });
   }
 
-  selectTrip(trip: Trip, event: Event) {
-    console.log(trip);
+  selectTrip(trip: Trip, index: number, event: Event) {
+    console.log(trip, event);
+    this.tripIndexSelected = index;
     this._selectTrip.emit(trip);
   }
 }
