@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card mb-2">
     <h6 class="card-header">List Survey</h6>
     <div class="card-body table-responsive pb-0">
         <table class="table table-hover">
@@ -18,6 +18,25 @@
                     <td>{{ survey.endDate | date: 'medium' }}</td>
                 </tr>
             </tbody>
+        </table>
+    </div>
+</div>
+<div class="card" *ngIf="surveySelected">
+    <h6 class="card-header">Survey Information</h6>
+    <div class="card-body">
+        <table class="table table-borderless">
+            <tr>
+                <th class="w-50">Average Speed</th>
+                <td>{{ surveySelected.avgSpeed | number: '.0-2' }} Km/h</td>
+            </tr>
+            <tr>
+                <th class="w-50">Duration</th>
+                <td>{{ surveySelected.duration }} min.</td>
+            </tr>
+            <tr>
+                <th class="w-50">Total Distance</th>
+                <td>{{ surveySelected.totalDistance | number: '.0-2' }} m</td>
+            </tr>
         </table>
     </div>
 </div>

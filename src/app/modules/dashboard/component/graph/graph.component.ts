@@ -54,7 +54,7 @@ export class GraphComponent implements OnInit {
               ticks: { fontColor: '#007bff' }
             },
             {
-              id: 'altitude',
+              id: 'accelerometer',
               type: 'linear',
               position: 'right',
               ticks: { fontColor: '#dc3545' }
@@ -96,11 +96,11 @@ export class GraphComponent implements OnInit {
           fill: false
         },
         {
-          label: 'Altitude',
-          yAxisID: 'altitude',
+          label: 'Accelerometer',
+          yAxisID: 'accelerometer',
           backgroundColor: '#dc3545',
           borderColor: '#dc3545',
-          data: this.surveys.map(survey => survey.altitude),
+          data: this.surveys.map(survey => survey.accelerometer),
           fill: false
         }
       ]

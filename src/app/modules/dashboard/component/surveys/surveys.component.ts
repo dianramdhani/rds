@@ -12,6 +12,7 @@ export class SurveysComponent implements OnInit {
   @Output('selectSurvey') _selectSurvey = new EventEmitter<SurveySummary>()
   surveys: SurveySummary[] = [];
   surveyIndexSelected: number;
+  surveySelected: SurveySummary;
 
   constructor(
     private surveySummaryService: SurveySummaryService
@@ -27,5 +28,7 @@ export class SurveysComponent implements OnInit {
   selectSurvey(survey: SurveySummary, index: number, event: Event) {
     this.surveyIndexSelected = index;
     this._selectSurvey.emit(survey);
+    console.log(survey);
+    this.surveySelected = survey;
   }
 }
