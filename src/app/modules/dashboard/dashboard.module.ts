@@ -7,13 +7,15 @@ import { DashboardComponent } from './page/dashboard/dashboard.component';
 import { SurveysComponent } from './component/surveys/surveys.component';
 import { GraphComponent } from './component/graph/graph.component';
 import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
+import { SharedModule } from '@shared/shared.module';
 
 
 @NgModule({
   declarations: [MapComponent, DashboardComponent, SurveysComponent, GraphComponent],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    SharedModule
   ],
   providers: [
     MapGraphCommunicatorService
