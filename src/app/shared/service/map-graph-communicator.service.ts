@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-import { TripByTrack } from '@data/scheme/trip-by-track';
+import { SurveyTrack } from '@data/scheme/survey-track';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import { TripByTrack } from '@data/scheme/trip-by-track';
 export class MapGraphCommunicatorService {
   protected _map: google.maps.Map;
   protected infoWindowHover: google.maps.InfoWindow;
-  lastTrips = new Subject<TripByTrack[]>();
+  lastSurveys = new Subject<SurveyTrack[]>();
 
   constructor() { }
 
@@ -21,7 +21,7 @@ export class MapGraphCommunicatorService {
     return this._map;
   }
 
-  drawMapPopup(trip: TripByTrack) {
+  drawMapPopup(survey: SurveyTrack) {
     if (this.infoWindowHover) {
       this.infoWindowHover.close();
     }
@@ -29,20 +29,20 @@ export class MapGraphCommunicatorService {
     const content = `
         <ul>
             <li>
-                <strong>IRI: </strong>${trip.iriResult.iriScore}
+                <strong>IRI: </strong>${survey.iriResult.iriScore}
             </li>
             <li>
-                <strong>Latitude: </strong>${trip.startLatitude}
+                <strong>Latitude: </strong>${survey.startLatitude}
             </li>
             <li>
-                <strong>Longitude: </strong>${trip.startLongitude}
+                <strong>Longitude: </strong>${survey.startLongitude}
             </li>
         </ul>
       `;
     this.infoWindowHover.setContent(content);
     this.infoWindowHover.setPosition({
-      lat: trip.startLatitude,
-      lng: trip.stopLongitude
+      lat: survey.startLatitude,
+      lng: survey.stopLongitude
     });
     this.infoWindowHover.open(this._map);
   }

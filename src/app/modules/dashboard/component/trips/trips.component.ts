@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
-import { Trip } from '@data/scheme/trip';
-import { TripService } from '@data/service/trip.service';
+import { Trip } from '@data/trip-scheme/trip';
+import { TripService } from '@data/trip-service/trip.service';
 
 @Component({
   selector: 'app-trips',

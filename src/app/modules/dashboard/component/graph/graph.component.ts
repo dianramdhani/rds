@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Chart } from 'chart.js';
 
-import { TripByTrack } from '@data/scheme/trip-by-track';
 import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
+import { SurveyTrack } from '@data/scheme/survey-track';
 
 @Component({
   selector: 'app-graph',
@@ -12,21 +12,21 @@ import { MapGraphCommunicatorService } from '@shared/service/map-graph-communica
 export class GraphComponent implements OnInit {
   @ViewChild('chart', { static: true }) chartEl: ElementRef;
   chart: Chart;
-  trips: TripByTrack[];
+  surveys: SurveyTrack[];
 
   constructor(
     private mapGraphCommunicatorService: MapGraphCommunicatorService
   ) { }
 
   ngOnInit() {
-    this.mapGraphCommunicatorService.lastTrips
-      .subscribe(trips => {
+    this.mapGraphCommunicatorService.lastSurveys
+      .subscribe(surveys => {
         if (!this.chart) {
           this.chartInit();
         }
 
-        this.trips = trips;
-        if (this.trips.length) {
+        this.surveys = surveys;
+        if (this.surveys.length) {
           this.chartDrawer();
         }
       });
@@ -41,7 +41,7 @@ export class GraphComponent implements OnInit {
           mode: 'index',
           custom: (tootip) => {
             if (tootip.dataPoints) {
-              this.mapGraphCommunicatorService.drawMapPopup(this.trips[tootip.dataPoints[0].index]);
+              this.mapGraphCommunicatorService.drawMapPopup(this.surveys[tootip.dataPoints[0].index]);
             }
           }
         },
@@ -75,10 +75,10 @@ export class GraphComponent implements OnInit {
     }
 
     const data: Chart.ChartData = {
-      labels: this.trips.map((_, index) => {
+      labels: this.surveys.map((_, index) => {
         if (index) {
-          const tempTrips = this.trips.slice(),
-            splice = tempTrips.splice(0, index),
+          const tempSurveys = this.surveys.slice(),
+            splice = tempSurveys.splice(0, index),
             intervals = splice.map(trip => trip.interval),
             reduce = intervals.reduce((accumulator, currentValue) => accumulator + currentValue);
           return reduce.toString();
@@ -92,7 +92,7 @@ export class GraphComponent implements OnInit {
           yAxisID: 'iri',
           backgroundColor: '#007bff',
           borderColor: '#007bff',
-          data: this.trips.map(trip => trip.iriResult.iriScore),
+          data: this.surveys.map(survey => survey.iriResult.iriScore),
           fill: false
         },
         {
@@ -100,7 +100,7 @@ export class GraphComponent implements OnInit {
           yAxisID: 'altitude',
           backgroundColor: '#dc3545',
           borderColor: '#dc3545',
-          data: this.trips.map(trip => trip.altitude),
+          data: this.surveys.map(survey => survey.altitude),
           fill: false
         }
       ]

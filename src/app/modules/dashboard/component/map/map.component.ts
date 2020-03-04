@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
-import { TripByTrack } from '@data/scheme/trip-by-track';
 import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
+import { SurveyTrack } from '@data/scheme/survey-track';
 
 @Component({
   selector: 'app-map',
@@ -11,7 +11,7 @@ import { MapGraphCommunicatorService } from '@shared/service/map-graph-communica
 export class MapComponent implements OnInit {
   @ViewChild('map', { static: true }) mapEl: ElementRef;
   @ViewChild('legend', { static: true }) legendEl: ElementRef;
-  trips: TripByTrack[] = [];
+  surveys: SurveyTrack[] = [];
   // http://eyetracking.upol.cz/color/
   colorsBar = [
     '#3bd100',
@@ -37,22 +37,22 @@ export class MapComponent implements OnInit {
       center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 })
     });
 
-    this.mapGraphCommunicatorService.lastTrips
-      .subscribe(trips => {
-        this.trips = trips;
+    this.mapGraphCommunicatorService.lastSurveys
+      .subscribe(surveys => {
+        this.surveys = surveys;
         this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
         this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
-        if (this.trips.length) {
-          this.mapGraphCommunicatorService.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
+        if (this.surveys.length) {
+          this.mapGraphCommunicatorService.map.setCenter({ lat: this.surveys[0].startLatitude, lng: this.surveys[0].startLongitude });
 
-          for (const i in this.trips) {
-            this.drawer(this.trips[i]);
+          for (const i in this.surveys) {
+            this.drawer(this.surveys[i]);
           }
         }
       });
   }
 
-  protected drawer(trip: TripByTrack) {
+  protected drawer(survey: SurveyTrack) {
     const scale = (
       num: number,
       in_min: number,
@@ -73,7 +73,7 @@ export class MapComponent implements OnInit {
         const content = `
         <ul>
             <li>
-                <strong>IRI: </strong>${trip.iriResult.iriScore}
+                <strong>IRI: </strong>${survey.iriResult.iriScore}
             </li>
             <li>
                 <strong>Latitude: </strong>${lat}
@@ -89,13 +89,13 @@ export class MapComponent implements OnInit {
       };
 
     // drawer polyline
-    const index = scale(trip.iriResult.iriScore, 0, 12, 0, 9),
+    const index = scale(survey.iriResult.iriScore, 0, 12, 0, 9),
       polyline = new google.maps.Polyline({
         strokeColor: this.colorsBar[index],
         strokeWeight: 5,
         path: [
-          new google.maps.LatLng(trip.startLatitude, trip.startLongitude),
-          new google.maps.LatLng(trip.stopLatitude, trip.stopLongitude),
+          new google.maps.LatLng(survey.startLatitude, survey.startLongitude),
+          new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
         ]
       });
     polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {

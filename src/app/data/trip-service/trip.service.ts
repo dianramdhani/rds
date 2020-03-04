@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { TripByTrack } from '@data/scheme/trip-by-track';
-import { Trip } from '@data/scheme/trip';
+import { TripByTrack } from '@data/trip-scheme/trip-by-track';
+import { Trip } from '@data/trip-scheme/trip';
 
 @Injectable({
   providedIn: 'root'
