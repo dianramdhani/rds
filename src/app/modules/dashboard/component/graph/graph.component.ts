@@ -60,6 +60,12 @@ export class GraphComponent implements OnInit {
               ticks: { fontColor: '#dc3545' }
             }
           ]
+        },
+        elements: {
+          point: {
+            radius: 0,
+            hitRadius: 10
+          }
         }
       }
     });
@@ -92,6 +98,7 @@ export class GraphComponent implements OnInit {
           yAxisID: 'iri',
           backgroundColor: '#007bff',
           borderColor: '#007bff',
+          borderWidth: 2,
           data: this.surveys.map(survey => survey.iriResult.iriScore),
           fill: false
         },
@@ -100,6 +107,7 @@ export class GraphComponent implements OnInit {
           yAxisID: 'accelerometer',
           backgroundColor: '#dc3545',
           borderColor: '#dc3545',
+          borderWidth: 1,
           data: this.surveys.map(survey => survey.accelerometer),
           fill: false
         }
