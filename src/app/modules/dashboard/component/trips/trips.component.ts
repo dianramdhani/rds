@@ -11,21 +11,23 @@ import { TripService } from '@data/service/trip.service';
 export class TripsComponent implements OnInit {
   @Output('selectTrip') _selectTrip = new EventEmitter<Trip>()
   trips: Trip[] = [];
+  tripIndexSelected: number;
 
   constructor(
     private tripService: TripService
   ) { }
 
   ngOnInit() {
-    this.tripService.retrieveAllTrips()
+    this.tripService.retrieveAllSurveySummaries()
       .subscribe(res => {
         console.log(res);
         this.trips = res;
       });
   }
 
-  selectTrip(trip: Trip, event: Event) {
-    console.log(trip);
+  selectTrip(trip: Trip, index: number, event: Event) {
+    console.log(trip, event);
+    this.tripIndexSelected = index;
     this._selectTrip.emit(trip);
   }
 }

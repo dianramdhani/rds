@@ -1,2 +1,11 @@
-<app-trips (selectTrip)="selectTrip($event)"></app-trips>
-<app-map [tripSelected]="tripSelected"></app-map>
+<div class="container-fluid my-4">
+    <div class="row">
+        <div class="col-8">
+            <app-map></app-map>
+            <app-graph></app-graph>
+        </div>
+        <div class="col-4">
+            <app-trips (selectTrip)="selectTrip($event)"></app-trips>
+        </div>
+    </div>
+</div>

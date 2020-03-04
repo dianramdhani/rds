@@ -1,9 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { TripService } from '@data/service/trip.service';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 
 import { TripByTrack } from '@data/scheme/trip-by-track';
-import { Subject } from 'rxjs';
-import { Trip } from '@data/scheme/trip';
+import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 
 @Component({
   selector: 'app-map',
@@ -11,9 +9,8 @@ import { Trip } from '@data/scheme/trip';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  @Input('tripSelected') tripSelected: Subject<Trip>;
   @ViewChild('map', { static: true }) mapEl: ElementRef;
-  map: google.maps.Map;
+  @ViewChild('legend', { static: true }) legendEl: ElementRef;
   trips: TripByTrack[] = [];
   // http://eyetracking.upol.cz/color/
   colorsBar = [
@@ -31,26 +28,28 @@ export class MapComponent implements OnInit {
   protected infoWindowClick = new google.maps.InfoWindow();
 
   constructor(
-    private tripService: TripService
+    private mapGraphCommunicatorService: MapGraphCommunicatorService
   ) { }
 
   ngOnInit() {
-    this.tripSelected.subscribe(trip => {
-      this.map = new google.maps.Map(this.mapEl.nativeElement, {
-        center: new google.maps.LatLng(-6.8966657, 107.6146185),
-        zoom: 10,
-      });
-
-      this.tripService.getTripByTrack(trip.id)
-        .subscribe(res => {
-          this.trips = res;
-          if (this.trips.length) {
-            for (const i in this.trips) {
-              this.drawer(this.trips[i]);
-            }
-          }
-        });
+    this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, {
+      zoom: 16,
+      center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 })
     });
+
+    this.mapGraphCommunicatorService.lastTrips
+      .subscribe(trips => {
+        this.trips = trips;
+        this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
+        this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
+        if (this.trips.length) {
+          this.mapGraphCommunicatorService.map.setCenter({ lat: this.trips[0].startLatitude, lng: this.trips[0].startLongitude });
+
+          for (const i in this.trips) {
+            this.drawer(this.trips[i]);
+          }
+        }
+      });
   }
 
   protected drawer(trip: TripByTrack) {
@@ -74,7 +73,7 @@ export class MapComponent implements OnInit {
         const content = `
         <ul>
             <li>
-                <strong>IRI: </strong>${trip.iri.iriScore}
+                <strong>IRI: </strong>${trip.iriResult.iriScore}
             </li>
             <li>
                 <strong>Latitude: </strong>${lat}
@@ -86,11 +85,11 @@ export class MapComponent implements OnInit {
         `;
         _infoWindow.setContent(content);
         _infoWindow.setPosition({ lat, lng });
-        _infoWindow.open(this.map);
+        _infoWindow.open(this.mapGraphCommunicatorService.map);
       };
 
     // drawer polyline
-    const index = scale(trip.iri.iriScore, 0, 12, 0, 9),
+    const index = scale(trip.iriResult.iriScore, 0, 12, 0, 9),
       polyline = new google.maps.Polyline({
         strokeColor: this.colorsBar[index],
         strokeWeight: 5,
@@ -109,6 +108,6 @@ export class MapComponent implements OnInit {
       this.infoWindowClick.close();
       setContentInfoWindow(e.latLng.lat(), e.latLng.lng(), this.infoWindowClick);
     });
-    polyline.setMap(this.map);
+    polyline.setMap(this.mapGraphCommunicatorService.map);
   }
 }

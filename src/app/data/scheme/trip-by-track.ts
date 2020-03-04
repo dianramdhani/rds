@@ -5,5 +5,7 @@ export class TripByTrack {
     startLongitude: number;
     stopLatitude: number;
     stopLongitude: number;
-    iri: Iri
+    interval: number;
+    altitude: number;
+    iriResult: Iri
 }

@@ -16,11 +16,11 @@ export class TripService {
     this.url = window['config']().api;
   }
 
-  getTripByTrack(tripId: string | number) {
-    return this.httpClient.get<TripByTrack[]>(`${this.url}/trip-service/trips/${tripId}/tracks/route`);
+  getSurveyTracks(tripId: string | number) {
+    return this.httpClient.get<TripByTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${tripId}/tracks`);
   }
 
-  retrieveAllTrips() {
-    return this.httpClient.get<Trip[]>(`${this.url}/trip-service/trips`);
+  retrieveAllSurveySummaries() {
+    return this.httpClient.get<Trip[]>(`${this.url}/survey-summary-service/surveySummaries`);
   }
 }

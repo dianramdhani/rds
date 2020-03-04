@@ -5,13 +5,18 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { MapComponent } from './component/map/map.component';
 import { DashboardComponent } from './page/dashboard/dashboard.component';
 import { TripsComponent } from './component/trips/trips.component';
+import { GraphComponent } from './component/graph/graph.component';
+import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 
 
 @NgModule({
-  declarations: [MapComponent, DashboardComponent, TripsComponent],
+  declarations: [MapComponent, DashboardComponent, TripsComponent, GraphComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule
+  ],
+  providers: [
+    MapGraphCommunicatorService
   ]
 })
 export class DashboardModule { }

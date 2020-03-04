@@ -21,6 +21,9 @@
     "paths": {
       "@data/*": [
         "src/app/data/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
       ]
     }
   },
