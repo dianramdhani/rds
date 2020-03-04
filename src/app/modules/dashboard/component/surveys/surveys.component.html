@@ -1,0 +1,23 @@
+<div class="card">
+    <h6 class="card-header">List Survey</h6>
+    <div class="card-body table-responsive pb-0">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Survey Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let survey of surveys; let surveyIndex = index"
+                    (click)="selectSurvey(survey, surveyIndex, $event)"
+                    [ngClass]="{'bg-primary active': surveyIndex === surveyIndexSelected}">
+                    <td>{{ survey.surveyName }}</td>
+                    <td>{{ survey.startDate | date: 'medium' }}</td>
+                    <td>{{ survey.endDate | date: 'medium' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

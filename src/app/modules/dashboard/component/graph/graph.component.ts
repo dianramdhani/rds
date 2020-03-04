@@ -79,7 +79,7 @@ export class GraphComponent implements OnInit {
         if (index) {
           const tempSurveys = this.surveys.slice(),
             splice = tempSurveys.splice(0, index),
-            intervals = splice.map(trip => trip.interval),
+            intervals = splice.map(survey => survey.interval),
             reduce = intervals.reduce((accumulator, currentValue) => accumulator + currentValue);
           return reduce.toString();
         } else {

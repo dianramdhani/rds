@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
   }
 
-  selectTrip(survey: SurveySummary) {
+  selectSurvey(survey: SurveySummary) {
     this.mapGraphCommunicatorService.lastSurveys.next([]);
     this.surveySummaryService.getSurveyTracks(survey.id)
       .subscribe(surveys => this.mapGraphCommunicatorService.lastSurveys.next(surveys));

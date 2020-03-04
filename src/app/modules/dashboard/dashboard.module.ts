@@ -4,13 +4,13 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { MapComponent } from './component/map/map.component';
 import { DashboardComponent } from './page/dashboard/dashboard.component';
-import { TripsComponent } from './component/trips/trips.component';
+import { SurveysComponent } from './component/surveys/surveys.component';
 import { GraphComponent } from './component/graph/graph.component';
 import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 
 
 @NgModule({
-  declarations: [MapComponent, DashboardComponent, TripsComponent, GraphComponent],
+  declarations: [MapComponent, DashboardComponent, SurveysComponent, GraphComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule
