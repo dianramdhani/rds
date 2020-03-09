@@ -20,6 +20,11 @@ export class SurveySummaryService {
     return this.httpClient.get<SurveyTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${id}/tracks`);
   }
 
+
+  getAvgSurveyTracks(id: string | number) {
+    return this.httpClient.get<SurveyTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${id}/tracks/avg`);
+  }
+
   retrieveAllSurveySummaries() {
     return this.httpClient.get<SurveySummary[]>(`${this.url}/survey-summary-service/surveySummaries`);
   }

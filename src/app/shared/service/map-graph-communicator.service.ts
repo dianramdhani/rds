@@ -47,3 +47,8 @@ export class MapGraphCommunicatorService {
     this.infoWindowHover.open(this._map);
   }
 }
+
+export enum SurveyType {
+  actual,
+  average
+}

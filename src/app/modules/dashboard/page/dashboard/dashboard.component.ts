@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
+import { MapGraphCommunicatorService, SurveyType } from '@shared/service/map-graph-communicator.service';
 import { SurveySummaryService } from '@data/service/survey-summary.service';
 import { SurveySummary } from '@data/scheme/survey-summary';
 
@@ -10,6 +10,10 @@ import { SurveySummary } from '@data/scheme/survey-summary';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  lastSurveySelected: SurveySummary;
+  surveyType = SurveyType;
+  surveyTypeSelected: number = this.surveyType.average;
+  showLoading = false;
 
   constructor(
     private surveySummaryService: SurveySummaryService,
@@ -20,8 +24,31 @@ export class DashboardComponent implements OnInit {
   }
 
   selectSurvey(survey: SurveySummary) {
+    this.lastSurveySelected = survey;
     this.mapGraphCommunicatorService.lastSurveys.next([]);
-    this.surveySummaryService.getSurveyTracks(survey.id)
-      .subscribe(surveys => this.mapGraphCommunicatorService.lastSurveys.next(surveys));
+    this.showLoading = true;
+
+    switch (this.surveyTypeSelected) {
+      case this.surveyType.actual:
+        this.surveySummaryService.getSurveyTracks(this.lastSurveySelected.id)
+          .subscribe(surveys => {
+            this.mapGraphCommunicatorService.lastSurveys.next(surveys);
+            this.showLoading = false;
+          });
+        break;
+
+      case this.surveyType.average:
+        this.surveySummaryService.getAvgSurveyTracks(this.lastSurveySelected.id)
+          .subscribe(surveys => {
+            this.mapGraphCommunicatorService.lastSurveys.next(surveys);
+            this.showLoading = false;
+          });
+        break;
+    }
+  }
+
+  changeSurveyType(surveyType: number) {
+    this.surveyTypeSelected = surveyType;
+    this.selectSurvey(this.lastSurveySelected);
   }
 }

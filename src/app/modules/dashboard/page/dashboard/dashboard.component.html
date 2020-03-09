@@ -1,6 +1,24 @@
 <div class="container-fluid my-4">
     <div class="row">
         <div class="col-7">
+            <div class="mb-2" *ngIf="lastSurveySelected">
+                <button class="btn mr-1" [ngClass]="{
+                    'btn-primary': surveyTypeSelected === surveyType.average,
+                    'btn-secondary': surveyTypeSelected !== surveyType.average
+                }" (click)="changeSurveyType(surveyType.average)">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                        *ngIf="showLoading && surveyTypeSelected === surveyType.average"></span>
+                    Average Mapping
+                </button>
+                <button class="btn mr-1" [ngClass]="{
+                    'btn-primary': surveyTypeSelected === surveyType.actual,
+                    'btn-secondary': surveyTypeSelected !== surveyType.actual
+                }" (click)="changeSurveyType(surveyType.actual)">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                        *ngIf="showLoading && surveyTypeSelected === surveyType.actual"></span>
+                    Actual Mapping
+                </button>
+            </div>
             <app-map></app-map>
             <app-graph></app-graph>
         </div>
