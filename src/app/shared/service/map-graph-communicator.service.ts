@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { formatDate, formatNumber } from '@angular/common';
 
 import { SurveyTrack } from '@data/scheme/survey-track';
 
@@ -27,17 +28,15 @@ export class MapGraphCommunicatorService {
     }
     this.infoWindowHover = new google.maps.InfoWindow();
     const content = `
-        <ul>
-            <li>
-                <strong>IRI: </strong>${survey.iriResult.iriScore}
-            </li>
-            <li>
-                <strong>Latitude: </strong>${survey.startLatitude}
-            </li>
-            <li>
-                <strong>Longitude: </strong>${survey.startLongitude}
-            </li>
-        </ul>
+        <strong>Date: </strong>${formatDate(survey.trackDate, 'medium', 'en')}
+        <br>
+        <strong>IRI: </strong>${formatNumber(survey.iriResult.iriScore, 'en', '.0-2')} m/km
+        <br>
+        <strong>Speed: </strong>${formatNumber(survey.speed, 'en', '.0-2')} km/h
+        <br>
+        <strong>Latitude: </strong>${survey.startLatitude}
+        <br>
+        <strong>Longitude: </strong>${survey.startLongitude}
       `;
     this.infoWindowHover.setContent(content);
     this.infoWindowHover.setPosition({

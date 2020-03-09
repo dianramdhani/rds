@@ -8,5 +8,7 @@ export class SurveyTrack {
     altitude: number;
     interval: number;
     accelerometer: number;
+    speed: number;
+    trackDate: string;
     iriResult: IriResult
 }

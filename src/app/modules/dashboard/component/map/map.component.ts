@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { formatDate, formatNumber } from '@angular/common';
 
 import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 import { SurveyTrack } from '@data/scheme/survey-track';
@@ -71,17 +72,15 @@ export class MapComponent implements OnInit {
         _infoWindow: google.maps.InfoWindow
       ) => {
         const content = `
-        <ul>
-            <li>
-                <strong>IRI: </strong>${survey.iriResult.iriScore}
-            </li>
-            <li>
-                <strong>Latitude: </strong>${lat}
-            </li>
-            <li>
-                <strong>Longitude: </strong>${lng}
-            </li>
-        </ul>
+          <strong>Date: </strong>${formatDate(survey.trackDate, 'medium', 'en')}
+          <br>
+          <strong>IRI: </strong>${formatNumber(survey.iriResult.iriScore, 'en', '.0-2')} m/km
+          <br>
+          <strong>Speed: </strong>${formatNumber(survey.speed, 'en', '.0-2')} km/h
+          <br>
+          <strong>Latitude: </strong>${survey.startLatitude}
+          <br>
+          <strong>Longitude: </strong>${survey.startLongitude}
         `;
         _infoWindow.setContent(content);
         _infoWindow.setPosition({ lat, lng });
