@@ -26,7 +26,8 @@ export class SurveysComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "All"]]
+      lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "All"]],
+      order: [[2, 'desc']]
     };
 
     this.surveySummaryService.retrieveAllSurveySummaries()
