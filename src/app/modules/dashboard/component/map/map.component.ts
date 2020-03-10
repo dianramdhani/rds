@@ -15,16 +15,16 @@ export class MapComponent implements OnInit {
   surveys: SurveyTrack[] = [];
   // http://eyetracking.upol.cz/color/
   colorsBar = [
-    '#3bd100',
-    '#55cc00',
-    '#7dbf00',
-    '#9baf00',
-    '#b39f00',
-    '#cd8600',
-    '#dd7200',
-    '#eb5900',
-    '#f63b00',
-    '#fa2a00'
+    '#4CB050',
+    '#8BC24A',
+    '#CDDC39',
+    '#FFEC3A',
+    '#FFD43A',
+    '#FEC207',
+    '#FD9700',
+    '#FD5621',
+    '#FF0000',
+    '#D72020'
   ];
   protected infoWindowClick = new google.maps.InfoWindow();
 
