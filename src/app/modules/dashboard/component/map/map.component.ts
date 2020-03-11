@@ -39,7 +39,7 @@ export class MapComponent implements OnInit {
     });
 
     this.mapGraphCommunicatorService.lastSurveys
-      .subscribe(surveys => {
+      .subscribe(async surveys => {
         this.surveys = surveys;
         this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, { zoom: 16 });
         this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
@@ -47,13 +47,13 @@ export class MapComponent implements OnInit {
           this.mapGraphCommunicatorService.map.setCenter({ lat: this.surveys[0].startLatitude, lng: this.surveys[0].startLongitude });
 
           for (const i in this.surveys) {
-            this.drawer(this.surveys[i]);
+            await this.drawer(this.surveys[i], +i);
           }
         }
       });
   }
 
-  protected drawer(survey: SurveyTrack) {
+  protected drawer(survey: SurveyTrack, i: number) {
     const scale = (
       num: number,
       in_min: number,
@@ -108,5 +108,11 @@ export class MapComponent implements OnInit {
       setContentInfoWindow(e.latLng.lat(), e.latLng.lng(), this.infoWindowClick);
     });
     polyline.setMap(this.mapGraphCommunicatorService.map);
+
+    if (i % 20 === 0) {
+      this.mapGraphCommunicatorService.map.panTo({ lat: survey.stopLatitude, lng: survey.stopLongitude });
+      const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+      return delay(100);
+    }
   }
 }
