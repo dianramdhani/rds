@@ -47,7 +47,7 @@ export class MapGraphCommunicatorService {
   }
 }
 
-export enum SurveyType {
+export enum SurveyTypes {
   actual,
   average
 }
