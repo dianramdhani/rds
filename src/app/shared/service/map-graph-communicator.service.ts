@@ -44,8 +44,8 @@ export class MapGraphCommunicatorService {
       lng: survey.stopLongitude
     };
     this.infoWindowHover.setPosition(latLng);
-    this.infoWindowHover.open(this._map);
-    this.map.setCenter(latLng);
+    setTimeout(() => this.infoWindowHover.open(this._map), 300);
+    this.map.panTo(latLng);
   }
 }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { SurveySummaryService } from '@data/service/survey-summary.service';
 import { SurveySummary } from '@data/scheme/survey-summary';
@@ -20,7 +20,8 @@ export class SurveysComponent implements OnInit, OnDestroy {
 
   constructor(
     private surveySummaryService: SurveySummaryService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -39,6 +40,7 @@ export class SurveysComponent implements OnInit, OnDestroy {
           const surveySummaryId = +this.route.firstChild.snapshot.params.surveySummaryId;
           this.surveySelected = this.surveys.find(survey => survey.id === surveySummaryId);
         } catch (error) {
+          this.router.navigate(['./null'], { relativeTo: this.route });
         }
       });
   }
