@@ -11,9 +11,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let survey of surveys; let surveyIndex = index"
-                        (click)="selectSurvey(survey, surveyIndex, $event)"
-                        [ngClass]="{'bg-primary active': surveyIndex === surveyIndexSelected}">
+                    <tr *ngFor="let survey of surveys; let surveyIndex = index" [routerLink]="['/dashboard', survey.id]"
+                        routerLinkActive="bg-primary active" (click)="selectSurvey(survey, $event)">
                         <td>{{ survey.surveyName }}</td>
                         <td>{{ survey.startDate | date: 'medium' }}</td>
                         <td>{{ survey.endDate | date: 'medium' }}</td>

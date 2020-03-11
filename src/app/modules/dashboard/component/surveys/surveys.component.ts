@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { SurveySummaryService } from '@data/service/survey-summary.service';
 import { SurveySummary } from '@data/scheme/survey-summary';
@@ -10,9 +11,7 @@ import { SurveySummary } from '@data/scheme/survey-summary';
   styleUrls: ['./surveys.component.scss']
 })
 export class SurveysComponent implements OnInit, OnDestroy {
-  @Output('selectSurvey') _selectSurvey = new EventEmitter<SurveySummary>()
   surveys: SurveySummary[] = [];
-  surveyIndexSelected: number;
   surveySelected: SurveySummary;
 
   // datatable
@@ -20,7 +19,9 @@ export class SurveysComponent implements OnInit, OnDestroy {
   dtTrigger = new Subject();
 
   constructor(
-    private surveySummaryService: SurveySummaryService
+    private surveySummaryService: SurveySummaryService,
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -31,9 +32,16 @@ export class SurveysComponent implements OnInit, OnDestroy {
     };
 
     this.surveySummaryService.retrieveAllSurveySummaries()
-      .subscribe(res => {
-        this.surveys = res;
+      .subscribe(surveys => {
+        this.surveys = surveys;
         this.dtTrigger.next();
+
+        try {
+          const surveySummaryId = +this.route.firstChild.snapshot.params.surveySummaryId;
+          this.surveySelected = this.surveys.find(survey => survey.id === surveySummaryId);
+        } catch (error) {
+          this.router.navigate(['./null'], { relativeTo: this.route });
+        }
       });
   }
 
@@ -41,9 +49,7 @@ export class SurveysComponent implements OnInit, OnDestroy {
     this.dtTrigger.unsubscribe();
   }
 
-  selectSurvey(survey: SurveySummary, index: number, event: Event) {
-    this.surveyIndexSelected = index;
-    this._selectSurvey.emit(survey);
+  selectSurvey(survey: SurveySummary, event: Event) {
     this.surveySelected = survey;
   }
 }

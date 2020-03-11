@@ -39,15 +39,17 @@ export class MapGraphCommunicatorService {
         <strong>Longitude: </strong>${survey.startLongitude}
       `;
     this.infoWindowHover.setContent(content);
-    this.infoWindowHover.setPosition({
+    const latLng = {
       lat: survey.startLatitude,
       lng: survey.stopLongitude
-    });
-    this.infoWindowHover.open(this._map);
+    };
+    this.infoWindowHover.setPosition(latLng);
+    setTimeout(() => this.infoWindowHover.open(this._map), 300);
+    this.map.panTo(latLng);
   }
 }
 
-export enum SurveyType {
+export enum SurveyTypes {
   actual,
   average
 }
