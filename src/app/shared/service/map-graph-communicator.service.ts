@@ -39,11 +39,13 @@ export class MapGraphCommunicatorService {
         <strong>Longitude: </strong>${survey.startLongitude}
       `;
     this.infoWindowHover.setContent(content);
-    this.infoWindowHover.setPosition({
+    const latLng = {
       lat: survey.startLatitude,
       lng: survey.stopLongitude
-    });
+    };
+    this.infoWindowHover.setPosition(latLng);
     this.infoWindowHover.open(this._map);
+    this.map.setCenter(latLng);
   }
 }
 
