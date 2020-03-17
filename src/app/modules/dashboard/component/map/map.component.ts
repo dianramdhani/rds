@@ -26,6 +26,7 @@ export class MapComponent implements OnInit {
     '#FF0000',
     '#D72020'
   ];
+  colorEvent = '#800080';
   protected infoWindowClick = new google.maps.InfoWindow();
 
   constructor(
@@ -71,7 +72,7 @@ export class MapComponent implements OnInit {
         lng: number,
         _infoWindow: google.maps.InfoWindow
       ) => {
-        const content = `
+        let content = `
           <strong>Date: </strong>${formatDate(survey.trackDate, 'medium', 'en')}
           <br>
           <strong>IRI: </strong>${formatNumber(survey.iriResult.iriScore, 'en', '.0-2')} m/km
@@ -82,6 +83,13 @@ export class MapComponent implements OnInit {
           <br>
           <strong>Longitude: </strong>${survey.startLongitude}
         `;
+        if (survey.eventNo) {
+          content = `
+            ${content}
+            <br>
+            <strong>Event Description: </strong>${survey.eventDescription}
+          `;
+        }
         _infoWindow.setContent(content);
         _infoWindow.setPosition({ lat, lng });
         _infoWindow.open(this.mapGraphCommunicatorService.map);
@@ -90,7 +98,7 @@ export class MapComponent implements OnInit {
     // drawer polyline
     const index = scale(survey.iriResult.iriScore, 0, 12, 0, 9),
       polyline = new google.maps.Polyline({
-        strokeColor: this.colorsBar[index],
+        strokeColor: survey.eventNo ? this.colorEvent : this.colorsBar[index],
         strokeWeight: 5,
         path: [
           new google.maps.LatLng(survey.startLatitude, survey.startLongitude),

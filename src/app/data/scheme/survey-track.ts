@@ -10,5 +10,7 @@ export class SurveyTrack {
     accelerometer: number;
     speed: number;
     trackDate: string;
+    eventNo: number;
+    eventDescription: string;
     iriResult: IriResult
 }
