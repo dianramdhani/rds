@@ -27,7 +27,7 @@ export class MapGraphCommunicatorService {
       this.infoWindowHover.close();
     }
     this.infoWindowHover = new google.maps.InfoWindow();
-    const content = `
+    let content = `
         <strong>Date: </strong>${formatDate(survey.trackDate, 'medium', 'en')}
         <br>
         <strong>IRI: </strong>${formatNumber(survey.iriResult.iriScore, 'en', '.0-2')} m/km
@@ -38,6 +38,13 @@ export class MapGraphCommunicatorService {
         <br>
         <strong>Longitude: </strong>${survey.startLongitude}
       `;
+    if (survey.eventNo) {
+      content = `
+        ${content}
+        <br>
+        <strong>Event Description: </strong>${survey.eventDescription}
+      `;
+    }
     this.infoWindowHover.setContent(content);
     const latLng = {
       lat: survey.startLatitude,
