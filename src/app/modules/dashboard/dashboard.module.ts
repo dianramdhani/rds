@@ -9,10 +9,11 @@ import { GraphComponent } from './component/graph/graph.component';
 import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 import { SharedModule } from '@shared/shared.module';
 import { MapGraphComponent } from './page/map-graph/map-graph.component';
+import { CalibrationComponent } from './component/calibration/calibration.component';
 
 
 @NgModule({
-  declarations: [MapComponent, DashboardComponent, SurveysComponent, GraphComponent, MapGraphComponent],
+  declarations: [MapComponent, DashboardComponent, SurveysComponent, GraphComponent, MapGraphComponent, CalibrationComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,
