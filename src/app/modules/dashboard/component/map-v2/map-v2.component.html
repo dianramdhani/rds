@@ -2,6 +2,12 @@
     <div id="map" #map></div>
 </div>
 
-<div id="legend" #legend [hidden]="!surveys.length">
+<div id="legend" #legend [hidden]="!showData">
     <img src="assets/img/legend.png">
+</div>
+
+<div class="pr-2" #layerSelector [hidden]="!showData">
+    <ng-select2 [data]="layers" [options]="options" [placeholder]="'Layers'" [(ngModel)]="layerSelected"
+        (ngModelChange)="changeLayers()">
+    </ng-select2>
 </div>

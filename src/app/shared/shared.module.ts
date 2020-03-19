@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataTablesModule } from 'angular-datatables';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { NgSelect2Module } from 'ng-select2';
 
 @NgModule({
   declarations: [],
@@ -12,7 +13,9 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   exports: [
     DataTablesModule,
-    ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    NgSelect2Module
   ]
 })
 export class SharedModule { }

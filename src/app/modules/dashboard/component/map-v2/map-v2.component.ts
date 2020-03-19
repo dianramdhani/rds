@@ -1,7 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Select2OptionData } from 'ng-select2';
+import { Options } from 'select2';
 
 import { SurveyTrack } from '@data/scheme/survey-track';
 import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
+import { SurveysFilterDrawer } from './surveys-filter-drawer';
+import { IriDrawer } from './iri-drawer';
 
 @Component({
   selector: 'app-map-v2',
@@ -11,7 +15,21 @@ import { MapGraphCommunicatorService } from '@shared/service/map-graph-communica
 export class MapV2Component implements OnInit {
   @ViewChild('map', { static: true }) mapEl: ElementRef;
   @ViewChild('legend', { static: true }) legendEl: ElementRef;
-  surveys: SurveyTrack[] = [];
+  @ViewChild('layerSelector', { static: true }) layerSelectorEl: ElementRef;
+
+  // IriDrawer
+  iriDraw: IriDrawer;
+
+  // SurveysFilterDrawer
+  eventDraw: SurveysFilterDrawer;
+  speedInvalidDraw: SurveysFilterDrawer;
+
+  // select2
+  layers: Array<Select2OptionData>;
+  options: Options;
+  layerSelected: string[];
+
+  showData = false;
 
   constructor(
     private mapGraphCommunicatorService: MapGraphCommunicatorService
@@ -19,157 +37,69 @@ export class MapV2Component implements OnInit {
 
   ngOnInit() {
     this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, {
-      zoom: 16,
+      zoom: 15,
       center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 })
     });
+    this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
+    this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(this.layerSelectorEl.nativeElement);
+
+    // select2
+    this.layers = [
+      {
+        id: 'event',
+        text: 'Event'
+      },
+      {
+        id: 'speedNotAllowed',
+        text: 'Invalid Speed'
+      }
+    ];
+    this.layerSelected = ['event'];
+    this.options = {
+      width: '135',
+      multiple: true,
+      tags: true
+    };
 
     this.mapGraphCommunicatorService.lastSurveys
       .subscribe(surveys => {
-        this.surveys = surveys;
-        this.clearAll();
-        this.drawIri();
-        this.drawEvent();
+        const
+          surveysEvent = surveys.filter(survey => survey.eventNo !== null);
+        this.eventDraw = new SurveysFilterDrawer(surveysEvent, '#800080', this.mapGraphCommunicatorService);
+
+        /**
+         * @todo
+         * minSpeed and maxSpeed can config
+         */
+        const minSpeed = 10,
+          maxSpeed = 20,
+          surveysSpeedNotAllowed = surveys.filter(survey => (+survey.speed < minSpeed) || (+survey.speed > maxSpeed));
+        this.speedInvalidDraw = new SurveysFilterDrawer(surveysSpeedNotAllowed, '#295fa6', this.mapGraphCommunicatorService);
+
+        this.iriDraw = new IriDrawer(surveys, this.mapGraphCommunicatorService);
+
+        this.showData = true;
+        this.changeLayers();
       });
   }
 
-  polylinesIri: google.maps.Polyline[] = [];
-  protected drawIri() {
-    const
-      colorsBar = [
-        '#4CB050',
-        '#8BC24A',
-        '#CDDC39',
-        '#FFEC3A',
-        '#FFD43A',
-        '#FEC207',
-        '#FD9700',
-        '#FD5621',
-        '#FF0000',
-        '#D72020'
-      ],
-      scale = (
-        num: number,
-        in_min: number,
-        in_max: number,
-        out_min: number,
-        out_max: number
-      ) => {
-        return Math.round((num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
-      };
+  changeLayers() {
+    if (this.layerSelected.length) {
+      const check = (id: string) => this.layerSelected.find(layer => layer === id);
+      if (check('event')) {
+        this.eventDraw.draw();
+      } else {
+        this.eventDraw.remove();
+      }
 
-    this.polylinesIri = this.surveys.map(survey => {
-      const index = scale(survey.iriResult.iriScore, 0, 12, 0, 9),
-        polyline = new google.maps.Polyline({
-          strokeColor: colorsBar[index],
-          strokeWeight: 5,
-          path: [
-            new google.maps.LatLng(survey.startLatitude, survey.startLongitude),
-            new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
-          ]
-        });
-
-      polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {
-        this.mapGraphCommunicatorService.drawMapPopup(survey, e.latLng.lat(), e.latLng.lng(), false);
-      });
-      polyline.addListener('mouseout', () => {
-        this.mapGraphCommunicatorService.removeMapPopup();
-      });
-
-      return polyline;
-    });
-
-    this.polylinesIri.forEach(polyline => polyline.setMap(this.mapGraphCommunicatorService.map));
-    this.mapGraphCommunicatorService.map.setCenter({ lat: this.surveys[0].startLatitude, lng: this.surveys[0].startLongitude });
-  }
-
-  protected clearIri() {
-    if (this.polylinesIri.length) {
-      this.polylinesIri.forEach(polyline => polyline.setMap(null));
-      this.polylinesIri = [];
+      if (check('speedNotAllowed')) {
+        this.speedInvalidDraw.draw();
+      } else {
+        this.speedInvalidDraw.remove();
+      }
+    } else {
+      this.eventDraw.remove();
+      this.speedInvalidDraw.remove();
     }
-  }
-
-  // polylinesEvent
-  polylinesEvent: google.maps.Polyline[] = [];
-  protected drawEvent() {
-    if (this.polylinesEvent.length === 0) {
-      const colorEvent = '#800080',
-        surveysEvent = this.surveys.filter(survey => survey.eventNo !== null);
-
-      this.polylinesEvent = surveysEvent.map(survey => {
-        const polyline = new google.maps.Polyline({
-          strokeColor: colorEvent,
-          strokeWeight: 5,
-          path: [
-            new google.maps.LatLng(survey.startLatitude, survey.startLongitude),
-            new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
-          ]
-        });
-
-        polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {
-          this.mapGraphCommunicatorService.drawMapPopup(survey, e.latLng.lat(), e.latLng.lng(), false);
-        });
-        polyline.addListener('mouseout', () => {
-          this.mapGraphCommunicatorService.removeMapPopup();
-        });
-
-        return polyline;
-      });
-
-      this.polylinesEvent.forEach(polyline => polyline.setMap(this.mapGraphCommunicatorService.map));
-    }
-  }
-
-  protected clearEvent() {
-    if (this.polylinesEvent.length) {
-      this.polylinesEvent.map(polyline => polyline.setMap(null));
-      this.polylinesEvent = [];
-    }
-  }
-
-  // polylinesSpeed
-  polylinesSpeedNotAllowed: google.maps.Polyline[] = [];
-  protected drawSpeedNotAllowed() {
-    if (this.polylinesSpeedNotAllowed.length === 0) {
-      const colorSpeedNotAllowed = '#295fa6',
-        minSpeed = 10,
-        maxSpeed = 20,
-        surveysSpeedNotAllowed = this.surveys.filter(survey => (+survey.speed < minSpeed) || (+survey.speed > maxSpeed));
-
-      this.polylinesSpeedNotAllowed = surveysSpeedNotAllowed.map(survey => {
-        const polyline = new google.maps.Polyline({
-          strokeColor: colorSpeedNotAllowed,
-          strokeWeight: 5,
-          path: [
-            new google.maps.LatLng(survey.startLatitude, survey.startLongitude),
-            new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
-          ]
-        });
-
-        polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {
-          this.mapGraphCommunicatorService.drawMapPopup(survey, e.latLng.lat(), e.latLng.lng(), false);
-        });
-        polyline.addListener('mouseout', () => {
-          this.mapGraphCommunicatorService.removeMapPopup();
-        });
-
-        return polyline;
-      });
-
-      this.polylinesSpeedNotAllowed.forEach(polyline => polyline.setMap(this.mapGraphCommunicatorService.map));
-    }
-  }
-
-  protected clearSpeedNotAllowed() {
-    if (this.polylinesSpeedNotAllowed.length) {
-      this.polylinesSpeedNotAllowed.map(polyline => polyline.setMap(null));
-      this.polylinesSpeedNotAllowed = [];
-    }
-  }
-
-  clearAll() {
-    this.clearIri();
-    this.clearEvent();
-    this.clearSpeedNotAllowed();
   }
 }
