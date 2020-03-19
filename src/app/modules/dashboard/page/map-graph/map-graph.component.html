@@ -3,7 +3,7 @@
         <button class="btn mr-1" [ngClass]="{
             'btn-primary': surveyTypeSelected === surveyTypes.average,
             'btn-secondary': surveyTypeSelected !== surveyTypes.average
-        }" (click)="selectSurvey(surveyTypes.average)">
+        }" [disabled]="surveyTypeSelected === surveyTypes.average" (click)="selectSurvey(surveyTypes.average)">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                 *ngIf="showLoading && surveyTypeSelected === surveyTypes.average"></span>
             Average Mapping
@@ -11,13 +11,13 @@
         <button class="btn mr-1" [ngClass]="{
             'btn-primary': surveyTypeSelected === surveyTypes.actual,
             'btn-secondary': surveyTypeSelected !== surveyTypes.actual
-        }" (click)="selectSurvey(surveyTypes.actual)">
+        }" [disabled]="surveyTypeSelected === surveyTypes.actual" (click)="selectSurvey(surveyTypes.actual)">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                 *ngIf="showLoading && surveyTypeSelected === surveyTypes.actual"></span>
             Actual Mapping
         </button>
     </div>
-    <app-calibration></app-calibration>
+    <app-calibration (refreshSurvey)="refreshSurvey($event)"></app-calibration>
 </div>
 <app-map></app-map>
 <app-graph></app-graph>

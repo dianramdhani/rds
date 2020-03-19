@@ -52,4 +52,8 @@ export class MapGraphComponent implements OnInit {
         break;
     }
   }
+
+  refreshSurvey(event: Event) {
+    this.selectSurvey(this.surveyTypes.average);
+  }
 }

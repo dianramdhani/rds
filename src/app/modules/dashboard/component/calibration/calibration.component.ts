@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { IriCalibrationService } from '@data/service/iri-calibration.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { Calibration } from '@data/scheme/calibration';
 
 @Component({
   selector: 'app-calibration',
@@ -6,11 +10,28 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./calibration.component.scss']
 })
 export class CalibrationComponent implements OnInit {
+  @Output('refreshSurvey') refreshSurvey = new EventEmitter();
   showEdit = false;
+  lastCalibration: Calibration;
+  formCalibration: FormGroup;
 
-  constructor() { }
+  constructor(
+    private iriCalibrationService: IriCalibrationService
+  ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.lastCalibration = await this.iriCalibrationService.retrieveCalibration(1).toPromise();
+    this.formCalibration = new FormGroup({
+      a1: new FormControl(this.lastCalibration.a1, Validators.required),
+      a2: new FormControl(this.lastCalibration.a2, Validators.required)
+    });
   }
 
+  async calibrate() {
+    const { a1, a2 } = this.formCalibration.value;
+    await this.iriCalibrationService.saveCalibration(a1, a2).toPromise();
+    await this.ngOnInit();
+    this.refreshSurvey.emit();
+    this.showEdit = false;
+  }
 }
