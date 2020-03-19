@@ -1,6 +1,6 @@
 <div class="font-weight-bold" *ngIf="!showEdit && lastCalibration">
     <span class="text-primary small font-weight-bolder mr-1">Calibration Fn.</span>
-    y={{ lastCalibration.a2 }}x{{ +lastCalibration.a1 > 0? '+': '' }}{{ lastCalibration.a1 }}
+    y={{ lastCalibration.a2 }}x{{ +lastCalibration.a1 >= 0? '+': '' }}{{ lastCalibration.a1 }}
     <button class="btn btn-primary ml-2" (click)="showEdit = true">Edit</button>
 </div>
 <div class="font-weight-bold form-inline" *ngIf="showEdit" [formGroup]="formCalibration">
