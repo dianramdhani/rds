@@ -22,10 +22,8 @@ export class MapGraphCommunicatorService {
     return this._map;
   }
 
-  drawMapPopup(survey: SurveyTrack) {
-    if (this.infoWindowHover) {
-      this.infoWindowHover.close();
-    }
+  drawMapPopup(survey: SurveyTrack, lat: number = null, lng: number = null, centerable = true) {
+    this.removeMapPopup();
     this.infoWindowHover = new google.maps.InfoWindow();
     let content = `
         <strong>Date: </strong>${formatDate(survey.trackDate, 'medium', 'en')}
@@ -47,12 +45,20 @@ export class MapGraphCommunicatorService {
     }
     this.infoWindowHover.setContent(content);
     const latLng = {
-      lat: survey.startLatitude,
-      lng: survey.stopLongitude
+      lat: lat || survey.startLatitude,
+      lng: lng || survey.startLongitude
     };
     this.infoWindowHover.setPosition(latLng);
     setTimeout(() => this.infoWindowHover.open(this._map), 300);
-    this.map.panTo(latLng);
+    if (centerable) {
+      this.map.panTo(latLng);
+    }
+  }
+
+  removeMapPopup() {
+    if (this.infoWindowHover) {
+      this.infoWindowHover.close();
+    }
   }
 }
 

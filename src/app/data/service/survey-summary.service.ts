@@ -22,7 +22,8 @@ export class SurveySummaryService {
 
 
   getAvgSurveyTracks(id: string | number) {
-    return this.httpClient.get<SurveyTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${id}/tracks/avg`);
+    // return this.httpClient.get<SurveyTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${id}/tracks/avg`);
+    return this.httpClient.get<SurveyTrack[]>('http://localhost:4200/assets/test/avg-dumy.json');
   }
 
   retrieveAllSurveySummaries() {

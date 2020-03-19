@@ -28,6 +28,7 @@ export class MapV2Component implements OnInit {
         this.surveys = surveys;
         this.clearAll();
         this.drawIri();
+        this.drawEvent();
       });
   }
 
@@ -57,15 +58,24 @@ export class MapV2Component implements OnInit {
       };
 
     this.polylinesIri = this.surveys.map(survey => {
-      const index = scale(survey.iriResult.iriScore, 0, 12, 0, 9);
-      return new google.maps.Polyline({
-        strokeColor: colorsBar[index],
-        strokeWeight: 5,
-        path: [
-          new google.maps.LatLng(survey.startLatitude, survey.startLongitude),
-          new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
-        ]
+      const index = scale(survey.iriResult.iriScore, 0, 12, 0, 9),
+        polyline = new google.maps.Polyline({
+          strokeColor: colorsBar[index],
+          strokeWeight: 5,
+          path: [
+            new google.maps.LatLng(survey.startLatitude, survey.startLongitude),
+            new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
+          ]
+        });
+
+      polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {
+        this.mapGraphCommunicatorService.drawMapPopup(survey, e.latLng.lat(), e.latLng.lng(), false);
       });
+      polyline.addListener('mouseout', () => {
+        this.mapGraphCommunicatorService.removeMapPopup();
+      });
+
+      return polyline;
     });
 
     this.polylinesIri.forEach(polyline => polyline.setMap(this.mapGraphCommunicatorService.map));
@@ -87,7 +97,7 @@ export class MapV2Component implements OnInit {
         surveysEvent = this.surveys.filter(survey => survey.eventNo !== null);
 
       this.polylinesEvent = surveysEvent.map(survey => {
-        return new google.maps.Polyline({
+        const polyline = new google.maps.Polyline({
           strokeColor: colorEvent,
           strokeWeight: 5,
           path: [
@@ -95,6 +105,15 @@ export class MapV2Component implements OnInit {
             new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
           ]
         });
+
+        polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {
+          this.mapGraphCommunicatorService.drawMapPopup(survey, e.latLng.lat(), e.latLng.lng(), false);
+        });
+        polyline.addListener('mouseout', () => {
+          this.mapGraphCommunicatorService.removeMapPopup();
+        });
+
+        return polyline;
       });
 
       this.polylinesEvent.forEach(polyline => polyline.setMap(this.mapGraphCommunicatorService.map));
@@ -118,7 +137,7 @@ export class MapV2Component implements OnInit {
         surveysSpeedNotAllowed = this.surveys.filter(survey => (+survey.speed < minSpeed) || (+survey.speed > maxSpeed));
 
       this.polylinesSpeedNotAllowed = surveysSpeedNotAllowed.map(survey => {
-        return new google.maps.Polyline({
+        const polyline = new google.maps.Polyline({
           strokeColor: colorSpeedNotAllowed,
           strokeWeight: 5,
           path: [
@@ -126,6 +145,15 @@ export class MapV2Component implements OnInit {
             new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
           ]
         });
+
+        polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {
+          this.mapGraphCommunicatorService.drawMapPopup(survey, e.latLng.lat(), e.latLng.lng(), false);
+        });
+        polyline.addListener('mouseout', () => {
+          this.mapGraphCommunicatorService.removeMapPopup();
+        });
+
+        return polyline;
       });
 
       this.polylinesSpeedNotAllowed.forEach(polyline => polyline.setMap(this.mapGraphCommunicatorService.map));
