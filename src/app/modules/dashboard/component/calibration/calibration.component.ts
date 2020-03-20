@@ -41,7 +41,7 @@ export class CalibrationComponent implements OnInit {
     const { a1, a2 } = this.formCalibration.value;
     await this.iriCalibrationService.saveCalibration(a1, a2).toPromise();
     await this.refreshCalibrate();
-    this.refreshSurvey.emit();
+    setTimeout(() => this.refreshSurvey.emit(), 50);
     this.showEdit = false;
   }
 }

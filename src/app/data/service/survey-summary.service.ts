@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { SurveyTrack } from '@data/scheme/survey-track';
 import { SurveySummary } from '@data/scheme/survey-summary';
@@ -17,12 +17,13 @@ export class SurveySummaryService {
   }
 
   getSurveyTracks(id: string | number) {
-    return this.httpClient.get<SurveyTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${id}/tracks`);
+    const params = new HttpParams().set('time', (new Date()).toISOString());
+    return this.httpClient.get<SurveyTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${id}/tracks`, { params });
   }
 
-
   getAvgSurveyTracks(id: string | number) {
-    return this.httpClient.get<SurveyTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${id}/tracks/avg`);
+    const params = new HttpParams().set('time', (new Date()).toISOString());
+    return this.httpClient.get<SurveyTrack[]>(`${this.url}/survey-summary-service/surveySummaries/${id}/tracks/avg`, { params });
     // return this.httpClient.get<SurveyTrack[]>('http://localhost:4200/assets/test/avg-dumy.json');
   }
 

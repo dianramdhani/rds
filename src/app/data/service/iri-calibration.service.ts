@@ -15,7 +15,8 @@ export class IriCalibrationService {
   }
 
   retrieveCalibration(id: string | number) {
-    return this.httpClient.get<Calibration>(`${this.url}/iri-calibration-service/iriCalibrations/${id}`);
+    const params = new HttpParams().set('time', (new Date()).toISOString());
+    return this.httpClient.get<Calibration>(`${this.url}/iri-calibration-service/iriCalibrations/${id}`, { params });
   }
 
   saveCalibration(a1: number, a2: number) {
