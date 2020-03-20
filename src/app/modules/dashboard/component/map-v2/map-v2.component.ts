@@ -2,10 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Select2OptionData } from 'ng-select2';
 import { Options } from 'select2';
 
-import { SurveyTrack } from '@data/scheme/survey-track';
 import { MapGraphCommunicatorService } from '@shared/service/map-graph-communicator.service';
 import { SurveysFilterDrawer } from './surveys-filter-drawer';
 import { IriDrawer } from './iri-drawer';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SurveyTrack } from '@data/scheme/survey-track';
 
 @Component({
   selector: 'app-map-v2',
@@ -29,6 +30,10 @@ export class MapV2Component implements OnInit {
   options: Options;
   layerSelected: string[];
 
+  // formConfig
+  formConfig: FormGroup;
+  surveys: SurveyTrack[];
+
   showData = false;
 
   constructor(
@@ -41,7 +46,7 @@ export class MapV2Component implements OnInit {
       center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 })
     });
     this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
-    this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(this.layerSelectorEl.nativeElement);
+    this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.layerSelectorEl.nativeElement);
 
     // select2
     this.layers = [
@@ -61,20 +66,20 @@ export class MapV2Component implements OnInit {
       tags: true
     };
 
+    // formConfig
+    this.formConfig = new FormGroup({
+      minSpeed: new FormControl(30, Validators.required),
+      maxSpeed: new FormControl(45, Validators.required)
+    });
+
     this.mapGraphCommunicatorService.lastSurveys
       .subscribe(surveys => {
         const
           surveysEvent = surveys.filter(survey => survey.eventNo !== null);
         this.eventDraw = new SurveysFilterDrawer(surveysEvent, '#800080', this.mapGraphCommunicatorService);
 
-        /**
-         * @todo
-         * minSpeed and maxSpeed can config
-         */
-        const minSpeed = 10,
-          maxSpeed = 20,
-          surveysSpeedNotAllowed = surveys.filter(survey => (+survey.speed < minSpeed) || (+survey.speed > maxSpeed));
-        this.speedInvalidDraw = new SurveysFilterDrawer(surveysSpeedNotAllowed, '#295fa6', this.mapGraphCommunicatorService);
+        this.surveys = [...surveys];
+        this.updateInvalidSpeed();
 
         this.iriDraw = new IriDrawer(surveys, this.mapGraphCommunicatorService);
 
@@ -101,5 +106,22 @@ export class MapV2Component implements OnInit {
       this.eventDraw.remove();
       this.speedInvalidDraw.remove();
     }
+  }
+
+  updateInvalidSpeed() {
+    const { minSpeed, maxSpeed } = this.formConfig.value;
+    if (minSpeed > maxSpeed) {
+      alert('INVALID CONFIG. Minimum speed must be lower than maximum speed!');
+      return;
+    }
+
+    const surveysSpeedNotAllowed = this.surveys.filter(survey => (+survey.speed < minSpeed) || (+survey.speed > maxSpeed));
+
+    if (this.speedInvalidDraw) {
+      this.speedInvalidDraw.remove();
+    }
+
+    this.speedInvalidDraw = new SurveysFilterDrawer(surveysSpeedNotAllowed, '#295fa6', this.mapGraphCommunicatorService);
+    this.changeLayers();
   }
 }
