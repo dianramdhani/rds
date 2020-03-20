@@ -43,8 +43,10 @@ export class MapV2Component implements OnInit {
   ngOnInit() {
     this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, {
       zoom: 15,
-      center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 })
+      center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 }),
+      mapTypeId: 'Styled'
     });
+    this.changeMapStyle();
     this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
     this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.layerSelectorEl.nativeElement);
 
@@ -74,11 +76,17 @@ export class MapV2Component implements OnInit {
 
     this.mapGraphCommunicatorService.lastSurveys
       .subscribe(surveys => {
+        if (this.iriDraw) {
+          this.iriDraw.remove();
+          this.eventDraw.remove();
+          this.speedInvalidDraw.remove();
+        }
+
         const
           surveysEvent = surveys.filter(survey => survey.eventNo !== null);
-        this.eventDraw = new SurveysFilterDrawer(surveysEvent, '#800080', this.mapGraphCommunicatorService);
+        this.eventDraw = new SurveysFilterDrawer(surveysEvent, '#800080', 100, this.mapGraphCommunicatorService);
 
-        this.surveys = [...surveys];
+        this.surveys = surveys;
         this.updateInvalidSpeed();
 
         this.iriDraw = new IriDrawer(surveys, this.mapGraphCommunicatorService);
@@ -110,18 +118,141 @@ export class MapV2Component implements OnInit {
 
   updateInvalidSpeed() {
     const { minSpeed, maxSpeed } = this.formConfig.value;
-    if (minSpeed > maxSpeed) {
+
+    if (minSpeed >= maxSpeed) {
       alert('INVALID CONFIG. Minimum speed must be lower than maximum speed!');
       return;
     }
 
-    const surveysSpeedNotAllowed = this.surveys.filter(survey => (+survey.speed < minSpeed) || (+survey.speed > maxSpeed));
-
+    const surveysSpeedNotAllowed = this.surveys.filter(survey => (survey.speed < minSpeed) || (survey.speed > maxSpeed));
     if (this.speedInvalidDraw) {
-      this.speedInvalidDraw.remove();
+      this.speedInvalidDraw.update(surveysSpeedNotAllowed);
+    } else {
+      this.speedInvalidDraw = new SurveysFilterDrawer(surveysSpeedNotAllowed, '#295fa6', 50, this.mapGraphCommunicatorService);
     }
 
-    this.speedInvalidDraw = new SurveysFilterDrawer(surveysSpeedNotAllowed, '#295fa6', this.mapGraphCommunicatorService);
     this.changeLayers();
+  }
+
+  changeMapStyle() {
+    const
+      styles: google.maps.MapTypeStyle[] = [
+        {
+          "featureType": "administrative",
+          "stylers": [
+            {
+              "saturation": -100
+            }
+          ]
+        },
+        {
+          "featureType": "administrative.province",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "landscape",
+          "stylers": [
+            {
+              "saturation": -100
+            },
+            {
+              "lightness": 65
+            },
+            {
+              "visibility": "on"
+            }
+          ]
+        },
+        {
+          "featureType": "poi",
+          "stylers": [
+            {
+              "saturation": -100
+            },
+            {
+              "lightness": 50
+            },
+            {
+              "visibility": "simplified"
+            }
+          ]
+        },
+        {
+          "featureType": "road",
+          "stylers": [
+            {
+              "saturation": -100
+            }
+          ]
+        },
+        {
+          "featureType": "road.arterial",
+          "stylers": [
+            {
+              "lightness": 30
+            }
+          ]
+        },
+        {
+          "featureType": "road.highway",
+          "stylers": [
+            {
+              "visibility": "simplified"
+            }
+          ]
+        },
+        {
+          "featureType": "road.local",
+          "stylers": [
+            {
+              "lightness": 40
+            }
+          ]
+        },
+        {
+          "featureType": "transit",
+          "stylers": [
+            {
+              "saturation": -100
+            },
+            {
+              "visibility": "simplified"
+            }
+          ]
+        },
+        {
+          "featureType": "water",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "hue": "#ffff00"
+            },
+            {
+              "saturation": -97
+            },
+            {
+              "lightness": -25
+            }
+          ]
+        },
+        {
+          "featureType": "water",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "saturation": -100
+            },
+            {
+              "lightness": -25
+            }
+          ]
+        }
+      ],
+      styledMapType = new google.maps.StyledMapType(styles, { name: 'Styled' });
+    this.mapGraphCommunicatorService.map.mapTypes.set('Styled', styledMapType);
   }
 }

@@ -7,8 +7,13 @@ export class SurveysFilterDrawer {
     constructor(
         private surveys: SurveyTrack[],
         private strokeColor: string,
+        private zIndex: number,
         private mapGraphCommunicatorService: MapGraphCommunicatorService
     ) {
+        this.setPolylines();
+    }
+
+    private setPolylines() {
         this.polylines = this.surveys.map(survey => {
             const polyline = new google.maps.Polyline({
                 strokeColor: this.strokeColor,
@@ -16,7 +21,8 @@ export class SurveysFilterDrawer {
                 path: [
                     new google.maps.LatLng(survey.startLatitude, survey.startLongitude),
                     new google.maps.LatLng(survey.stopLatitude, survey.stopLongitude),
-                ]
+                ],
+                zIndex: this.zIndex
             });
 
             polyline.addListener('mouseover', (e: google.maps.MouseEvent) => {
@@ -36,5 +42,12 @@ export class SurveysFilterDrawer {
 
     remove() {
         this.polylines.forEach(polyline => polyline.setMap(null));
+    }
+
+    update(surveys: SurveyTrack[]) {
+        this.remove();
+        this.surveys = surveys;
+        this.setPolylines();
+        this.draw();
     }
 }
