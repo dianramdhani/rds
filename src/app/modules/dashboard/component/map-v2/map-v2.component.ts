@@ -68,8 +68,8 @@ export class MapV2Component implements OnInit {
 
     // formConfig
     this.formConfig = new FormGroup({
-      minSpeed: new FormControl(30, Validators.required),
-      maxSpeed: new FormControl(45, Validators.required)
+      minSpeed: new FormControl(40, Validators.required),
+      maxSpeed: new FormControl(60, Validators.required)
     });
 
     this.mapGraphCommunicatorService.lastSurveys
