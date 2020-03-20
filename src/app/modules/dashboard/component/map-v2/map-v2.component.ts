@@ -43,8 +43,10 @@ export class MapV2Component implements OnInit {
   ngOnInit() {
     this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, {
       zoom: 15,
-      center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 })
+      center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 }),
+      mapTypeId: 'Styled'
     });
+    this.changeMapStyle();
     this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
     this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.layerSelectorEl.nativeElement);
 
@@ -130,5 +132,127 @@ export class MapV2Component implements OnInit {
     }
 
     this.changeLayers();
+  }
+
+  changeMapStyle() {
+    const
+      styles: google.maps.MapTypeStyle[] = [
+        {
+          "featureType": "administrative",
+          "stylers": [
+            {
+              "saturation": -100
+            }
+          ]
+        },
+        {
+          "featureType": "administrative.province",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "landscape",
+          "stylers": [
+            {
+              "saturation": -100
+            },
+            {
+              "lightness": 65
+            },
+            {
+              "visibility": "on"
+            }
+          ]
+        },
+        {
+          "featureType": "poi",
+          "stylers": [
+            {
+              "saturation": -100
+            },
+            {
+              "lightness": 50
+            },
+            {
+              "visibility": "simplified"
+            }
+          ]
+        },
+        {
+          "featureType": "road",
+          "stylers": [
+            {
+              "saturation": -100
+            }
+          ]
+        },
+        {
+          "featureType": "road.arterial",
+          "stylers": [
+            {
+              "lightness": 30
+            }
+          ]
+        },
+        {
+          "featureType": "road.highway",
+          "stylers": [
+            {
+              "visibility": "simplified"
+            }
+          ]
+        },
+        {
+          "featureType": "road.local",
+          "stylers": [
+            {
+              "lightness": 40
+            }
+          ]
+        },
+        {
+          "featureType": "transit",
+          "stylers": [
+            {
+              "saturation": -100
+            },
+            {
+              "visibility": "simplified"
+            }
+          ]
+        },
+        {
+          "featureType": "water",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "hue": "#ffff00"
+            },
+            {
+              "saturation": -97
+            },
+            {
+              "lightness": -25
+            }
+          ]
+        },
+        {
+          "featureType": "water",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "saturation": -100
+            },
+            {
+              "lightness": -25
+            }
+          ]
+        }
+      ],
+      styledMapType = new google.maps.StyledMapType(styles, { name: 'Styled' });
+    this.mapGraphCommunicatorService.map.mapTypes.set('Styled', styledMapType);
   }
 }
