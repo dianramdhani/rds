@@ -1,0 +1,39 @@
+<div class="card">
+    <div id="map" #map></div>
+</div>
+
+<div id="legend" #legend [hidden]="!showData">
+    <img src="assets/img/legend.png">
+</div>
+
+<div class="pl-2" #layerSelector [hidden]="!showData">
+    <ng-select2 [data]="layers" [options]="options" [placeholder]="'Layers'" [(ngModel)]="layerSelected"
+        (ngModelChange)="changeLayers()">
+    </ng-select2>
+    <div class="row mt-2">
+        <div class="col">
+            <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
+                <button class="btn btn-sm btn-light" id="dropdownForm1" ngbDropdownToggle>Config</button>
+                <div class="px-4 py-3" ngbDropdownMenu aria-labelledby="dropdownForm1" style="width: 250px; zoom: 0.8;">
+                    <h6>Speed Limiter (km/h)</h6>
+                    <form [formGroup]="formConfig">
+                        <div class="form-group">
+                            <label>Minimum</label>
+                            <input type="number" class="form-control" placeholder="Minimum Speed"
+                                formControlName="minSpeed">
+                        </div>
+                        <div class="form-group">
+                            <label>Maximum</label>
+                            <input type="number" class="form-control" placeholder="Maximum Speed"
+                                formControlName="maxSpeed">
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary px-3" [disabled]="!formConfig.valid"
+                                (click)="myDrop.close(); updateInvalidSpeed()">Apply</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

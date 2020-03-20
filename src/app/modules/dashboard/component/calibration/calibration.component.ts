@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { IriCalibrationService } from '@data/service/iri-calibration.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 import { Calibration } from '@data/scheme/calibration';
 
@@ -16,10 +17,19 @@ export class CalibrationComponent implements OnInit {
   formCalibration: FormGroup;
 
   constructor(
-    private iriCalibrationService: IriCalibrationService
+    private iriCalibrationService: IriCalibrationService,
+    private route: ActivatedRoute
   ) { }
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      if (params.surveySummaryId !== 'null') {
+        this.refreshCalibrate();
+      }
+    });
+  }
+
+  async refreshCalibrate() {
     this.lastCalibration = await this.iriCalibrationService.retrieveCalibration(1).toPromise();
     this.formCalibration = new FormGroup({
       a1: new FormControl(this.lastCalibration.a1, Validators.required),
@@ -30,7 +40,7 @@ export class CalibrationComponent implements OnInit {
   async calibrate() {
     const { a1, a2 } = this.formCalibration.value;
     await this.iriCalibrationService.saveCalibration(a1, a2).toPromise();
-    await this.ngOnInit();
+    await this.refreshCalibrate();
     setTimeout(() => this.refreshSurvey.emit(), 50);
     this.showEdit = false;
   }
