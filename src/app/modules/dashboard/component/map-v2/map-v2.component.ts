@@ -74,11 +74,17 @@ export class MapV2Component implements OnInit {
 
     this.mapGraphCommunicatorService.lastSurveys
       .subscribe(surveys => {
+        if (this.iriDraw) {
+          this.iriDraw.remove();
+          this.eventDraw.remove();
+          this.speedInvalidDraw.remove();
+        }
+
         const
           surveysEvent = surveys.filter(survey => survey.eventNo !== null);
-        this.eventDraw = new SurveysFilterDrawer(surveysEvent, '#800080', this.mapGraphCommunicatorService);
+        this.eventDraw = new SurveysFilterDrawer(surveysEvent, '#800080', 100, this.mapGraphCommunicatorService);
 
-        this.surveys = [...surveys];
+        this.surveys = surveys;
         this.updateInvalidSpeed();
 
         this.iriDraw = new IriDrawer(surveys, this.mapGraphCommunicatorService);
@@ -110,18 +116,19 @@ export class MapV2Component implements OnInit {
 
   updateInvalidSpeed() {
     const { minSpeed, maxSpeed } = this.formConfig.value;
-    if (minSpeed > maxSpeed) {
+
+    if (minSpeed >= maxSpeed) {
       alert('INVALID CONFIG. Minimum speed must be lower than maximum speed!');
       return;
     }
 
-    const surveysSpeedNotAllowed = this.surveys.filter(survey => (+survey.speed < minSpeed) || (+survey.speed > maxSpeed));
-
+    const surveysSpeedNotAllowed = this.surveys.filter(survey => (survey.speed < minSpeed) || (survey.speed > maxSpeed));
     if (this.speedInvalidDraw) {
-      this.speedInvalidDraw.remove();
+      this.speedInvalidDraw.update(surveysSpeedNotAllowed);
+    } else {
+      this.speedInvalidDraw = new SurveysFilterDrawer(surveysSpeedNotAllowed, '#295fa6', 50, this.mapGraphCommunicatorService);
     }
 
-    this.speedInvalidDraw = new SurveysFilterDrawer(surveysSpeedNotAllowed, '#295fa6', this.mapGraphCommunicatorService);
     this.changeLayers();
   }
 }
