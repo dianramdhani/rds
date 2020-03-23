@@ -25,7 +25,7 @@ export class MapGraphComponent implements OnInit {
     this.route.params.subscribe(params => {
       if (params.surveySummaryId !== 'null') {
         this.surveySummaryId = params.surveySummaryId;
-        this.selectSurvey(this.surveyTypes.average);
+        this.refreshSurvey();
       }
     });
   }
@@ -51,5 +51,9 @@ export class MapGraphComponent implements OnInit {
           });
         break;
     }
+  }
+
+  refreshSurvey(event: Event = null) {
+    this.selectSurvey(this.surveyTypes.average);
   }
 }

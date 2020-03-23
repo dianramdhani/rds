@@ -1,0 +1,30 @@
+#map {
+    height: 580px;
+}
+
+#legend {
+    position: relative;
+    width: 1px;
+    height: 1px;
+
+    img {
+        position: absolute;
+        width: 240px;
+        bottom: -163px;
+        right: 80px;
+        background-color: white;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+        border-radius: 2px;
+    }
+}
+
+.btn-light {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+.btn-light:hover {
+    background-color: #e4e4e4;
+    color: black;
+}
