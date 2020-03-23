@@ -8,13 +8,14 @@
 
 <div class="pl-2" #layerSelector [hidden]="!showData">
     <ng-select2 [data]="layers" [options]="options" [placeholder]="'Layers'" [(ngModel)]="layerSelected"
-        (ngModelChange)="changeLayers()">
+        (ngModelChange)="changeLayers()" title="Selector layers">
     </ng-select2>
     <div class="row mt-2" *ngIf="showConfig">
         <div class="col">
             <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
-                <button class="btn btn-sm btn-light" id="dropdownForm1" ngbDropdownToggle>Config</button>
-                <div class="px-4 py-3" ngbDropdownMenu aria-labelledby="dropdownForm1" style="width: 250px; zoom: 0.8;">
+                <button class="btn btn-sm btn-light" id="config" title="Config speed limiter"
+                    ngbDropdownToggle>Config</button>
+                <div class="px-4 py-3" ngbDropdownMenu aria-labelledby="config" style="width: 250px; zoom: 0.8;">
                     <h6>Speed Limiter (km/h)</h6>
                     <form [formGroup]="formConfig">
                         <div class="form-group">

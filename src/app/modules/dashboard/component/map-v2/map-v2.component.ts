@@ -45,7 +45,13 @@ export class MapV2Component implements OnInit {
     this.mapGraphCommunicatorService.map = new google.maps.Map(this.mapEl.nativeElement, {
       zoom: 15,
       center: new google.maps.LatLng({ lat: -6.899514, lng: 107.6137633 }),
-      mapTypeId: 'Styled'
+      mapTypeControlOptions: {
+        mapTypeIds: [
+          'focusToData',
+          'roadmap',
+          'terrain',
+        ]
+      }
     });
     this.changeMapStyle();
     this.mapGraphCommunicatorService.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(this.legendEl.nativeElement);
@@ -255,7 +261,8 @@ export class MapV2Component implements OnInit {
           ]
         }
       ],
-      styledMapType = new google.maps.StyledMapType(styles, { name: 'Styled' });
-    this.mapGraphCommunicatorService.map.mapTypes.set('Styled', styledMapType);
+      styledMapType = new google.maps.StyledMapType(styles, { name: 'Highlight Data' });
+    this.mapGraphCommunicatorService.map.mapTypes.set('focusToData', styledMapType);
+    this.mapGraphCommunicatorService.map.setMapTypeId('focusToData');
   }
 }
