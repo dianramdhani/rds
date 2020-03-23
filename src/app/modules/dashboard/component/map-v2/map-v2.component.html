@@ -10,7 +10,7 @@
     <ng-select2 [data]="layers" [options]="options" [placeholder]="'Layers'" [(ngModel)]="layerSelected"
         (ngModelChange)="changeLayers()">
     </ng-select2>
-    <div class="row mt-2">
+    <div class="row mt-2" *ngIf="showConfig">
         <div class="col">
             <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
                 <button class="btn btn-sm btn-light" id="dropdownForm1" ngbDropdownToggle>Config</button>

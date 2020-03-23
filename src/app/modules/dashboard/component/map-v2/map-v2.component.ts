@@ -35,6 +35,7 @@ export class MapV2Component implements OnInit {
   surveys: SurveyTrack[];
 
   showData = false;
+  showConfig = false;
 
   constructor(
     private mapGraphCommunicatorService: MapGraphCommunicatorService
@@ -107,8 +108,10 @@ export class MapV2Component implements OnInit {
 
       if (check('speedNotAllowed')) {
         this.speedInvalidDraw.draw();
+        this.showConfig = true;
       } else {
         this.speedInvalidDraw.remove();
+        this.showConfig = false;
       }
     } else {
       this.eventDraw.remove();
